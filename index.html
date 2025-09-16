@@ -16,6 +16,7 @@
 <body>
   <h2>📅 Agenda de Compromissos</h2>
 
+  <!-- Formulário para cadastro -->
   <form id="formCompromisso">
     <label>Data:</label>
     <input type="date" id="data" required>
@@ -37,14 +38,16 @@
 
   <hr>
 
+  <!-- Botões para filtrar -->
   <button onclick="carregar('Não')">📌 Ver Abertos</button>
   <button onclick="carregar('Sim')">✅ Ver Baixados</button>
 
   <div id="relatorio"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzL2x_Cj-9PWZuyooVNDPI8iwkyTit6RgFcjGHHPQ66xgnYBzmXCuptsn_bvvCqrxLO/exec
-"; // URL do seu Web App do Apps Script
+    // COLE AQUI A URL DO SEU APPS SCRIPT PUBLICADO
+    const API_URL = "https://script.google.com/macros/s/AKfycbxkGHhr29fRz_Vv5vmTWi93Dh6ltMqzRIxlPW7bu7zmo9tVeyCYKfPgENtg9i1u0aKK/exec
+";
 
     // Salvar compromisso
     document.getElementById("formCompromisso").addEventListener("submit", function(e){
@@ -55,6 +58,7 @@
         compromisso: document.getElementById("compromisso").value,
         baixado: document.getElementById("baixado").value
       };
+
       fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(dados)
