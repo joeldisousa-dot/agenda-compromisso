@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda via Google Sheets</title>
+</head>
+<body>
+  <h2>📅 Agenda</h2>
+
+  <form id="form">
+    <input type="date" id="data" required>
+    <input type="time" id="hora" required>
+    <input type="text" id="compromisso" placeholder="Compromisso" required>
+    <select id="status">
+      <option value="Não">Não</option>
+      <option value="Sim">Sim</option>
+    </select>
+    <button type="submit">Salvar</button>
+  </form>
+
+  <h3>Compromissos</h3>
+  <div id="lista"></div>
+
+  <script>
+    const API_URL = "URL_DO_SEU_WEBAPP"; // cole aqui a URL gerada pelo Apps Script
+
+    // Salvar compromisso
+    document.getElementById("form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const data = {
+        data: document.getElementById("data").value,
+        hora: document.getElementById("hora").value,
+        compromisso: document.getElementById("compromisso").value,
+        status: document.getElementById("status").value
+      };
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+      carregar();
+    });
+
+    // Carregar compromissos
+    async function carregar() {
+      const r = await fetch(API_URL);
+      const dados = await r.json();
+      let html = "<ul>";
+      dados.forEach(c => {
+        html += `<li>${c.data} ${c.hora} - ${c.compromisso} [${c.status}]</li>`;
+      });
+      html += "</ul>";
+      document.getElementById("lista").innerHTML = html;
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
