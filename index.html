@@ -1,17 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <title>Agenda de Compromissos</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+    input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
+    button { cursor: pointer; background: #007bff; color: white; border: none; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background: #f2f2f2; }
   </style>
 </head>
 <body>
-  <h2>📅 Agenda</h2>
+  <h2>📅 Agenda de Compromissos</h2>
+
+  <form id="formCompromisso">
+    <label>Data:</label>
+    <input type="date" id="data" required>
+
+    <label>Horário:</label>
+    <input type="time" id="horario" required>
+
+    <label>Compromisso:</label>
+    <input type="text" id="compromisso" required>
+
+    <label>Status:</label>
+    <select id="baixado">
+      <option value="Não">Não</option>
+      <option value="Sim">Sim</option>
+    </select>
+
+    <button type="submit">Salvar Compromisso</button>
+  </form>
+
+  <hr>
 
   <button onclick="carregar('Não')">📌 Ver Abertos</button>
   <button onclick="carregar('Sim')">✅ Ver Baixados</button>
@@ -19,12 +43,33 @@
   <div id="relatorio"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxkGHhr29fRz_Vv5vmTWi93Dh6ltMqzRIxlPW7bu7zmo9tVeyCYKfPgENtg9i1u0aKK/exec
-"; // troque pela URL gerada no GAS
+    const API_URL = "COLE_AQUI_SUA_URL_DO_APPS_SCRIPT"; // URL do seu Web App do Apps Script
 
+    // Salvar compromisso
+    document.getElementById("formCompromisso").addEventListener("submit", function(e){
+      e.preventDefault();
+      const dados = {
+        data: document.getElementById("data").value,
+        horario: document.getElementById("horario").value,
+        compromisso: document.getElementById("compromisso").value,
+        baixado: document.getElementById("baixado").value
+      };
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(dados)
+      })
+      .then(res => res.json())
+      .then(() => {
+        alert("✅ Compromisso salvo!");
+        this.reset();
+      })
+      .catch(err => console.error(err));
+    });
+
+    // Carregar compromissos
     function carregar(status) {
       fetch(`${API_URL}?status=${status}`)
-        .then(r => r.json())
+        .then(res => res.json())
         .then(dados => {
           const div = document.getElementById("relatorio");
           if (!dados || dados.length === 0) {
@@ -43,10 +88,7 @@
           html += "</table>";
           div.innerHTML = html;
         })
-        .catch(err => {
-          console.error(err);
-          document.getElementById("relatorio").innerHTML = "<p>Erro ao carregar dados.</p>";
-        });
+        .catch(err => console.error(err));
     }
   </script>
 </body>
