@@ -2,58 +2,75 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Agenda via Google Sheets</title>
+  <title>Agenda de Compromissos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background: #333;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-  <h2>📅 Agenda</h2>
-
-  <form id="form">
-    <input type="date" id="data" required>
-    <input type="time" id="hora" required>
-    <input type="text" id="compromisso" placeholder="Compromisso" required>
-    <select id="status">
-      <option value="Não">Não</option>
-      <option value="Sim">Sim</option>
-    </select>
-    <button type="submit">Salvar</button>
-  </form>
-
-  <h3>Compromissos</h3>
-  <div id="lista"></div>
+  <h1>📅 Agenda de Compromissos</h1>
+  <table id="tabela">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Compromisso</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4">Carregando...</td></tr>
+    </tbody>
+  </table>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxwJpD0FsgO_2mM5DzvgUwqBFEwoC8MAPU7mldIFPCieAaVAd6y9nQsKynaXZgB3aQx/exec
-"; // cole aqui a URL gerada pelo Apps Script
+    const sheetID = "1xteCSu4MEruVRf8dXE1VeOBs_A7tVoZ37gcb0kMWwdE";
+    const sheetName = "dados"; // ajuste se o nome for diferente
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
-    // Salvar compromisso
-    document.getElementById("form").addEventListener("submit", async e => {
-      e.preventDefault();
-      const data = {
-        data: document.getElementById("data").value,
-        hora: document.getElementById("hora").value,
-        compromisso: document.getElementById("compromisso").value,
-        status: document.getElementById("status").value
-      };
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(data)
+    fetch(url)
+      .then(res => res.text())
+      .then(data => {
+        const json = JSON.parse(data.substring(47).slice(0, -2));
+        const tabela = document.querySelector("#tabela tbody");
+        tabela.innerHTML = "";
+
+        json.table.rows.forEach(linha => {
+          const tr = document.createElement("tr");
+          linha.c.forEach(cel => {
+            const td = document.createElement("td");
+            td.textContent = cel ? cel.v : "";
+            tr.appendChild(td);
+          });
+          tabela.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        document.querySelector("#tabela tbody").innerHTML =
+          `<tr><td colspan="4">Erro ao carregar: ${err}</td></tr>`;
       });
-      carregar();
-    });
-
-    // Carregar compromissos
-    async function carregar() {
-      const r = await fetch(API_URL);
-      const dados = await r.json();
-      let html = "<ul>";
-      dados.forEach(c => {
-        html += `<li>${c.data} ${c.hora} - ${c.compromisso} [${c.status}]</li>`;
-      });
-      html += "</ul>";
-      document.getElementById("lista").innerHTML = html;
-    }
-
-    carregar();
   </script>
 </body>
 </html>
