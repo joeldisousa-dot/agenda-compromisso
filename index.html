@@ -16,86 +16,99 @@
 <body>
   <h2>📅 Agenda de Compromissos</h2>
 
+  <!-- Formulário -->
   <form id="formCompromisso">
     <label>Data:</label>
     <input type="date" id="data" required>
+
     <label>Horário:</label>
     <input type="time" id="horario" required>
+
     <label>Compromisso:</label>
     <input type="text" id="compromisso" required>
-    <label>Status:</label>
-    <select id="baixado">
-      <option value="Não">Não</option>
-      <option value="Sim">Sim</option>
-    </select>
+
     <button type="submit">Salvar Compromisso</button>
   </form>
 
   <hr>
 
-  <button onclick="carregar('Não')">📌 Ver Abertos</button>
-  <button onclick="carregar('Sim')">✅ Ver Baixados</button>
+  <button onclick="carregar()">🔄 Atualizar Lista</button>
 
   <div id="relatorio"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzfyHVejEuY4-g6BOkNiLRjWglUErc2n2T8CMNL2mzKdsK1pei-0p_SS_Gwbca4XrHH/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
 
-    const form = document.getElementById("formCompromisso");
-    const relatorioDiv = document.getElementById("relatorio");
-
-    async function salvarCompromisso(dados) {
-      try {
-        const res = await fetch(API_URL, {method: "POST", body: JSON.stringify(dados)});
-        const json = await res.json();
-        return json.status === "ok";
-      } catch (err) {
-        console.error(err);
-        return false;
-      }
-    }
-
-    async function carregar(status) {
-      relatorioDiv.innerHTML = "<p>Carregando...</p>";
-      try {
-        const res = await fetch(`${API_URL}?status=${status}`);
-        const dados = await res.json();
-        if (!dados || dados.length === 0) {
-          relatorioDiv.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
-          return;
-        }
-        let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
-        dados.forEach(c => {
-          html += `<tr><td>${c.data}</td><td>${c.horario}</td><td>${c.compromisso}</td><td>${c.baixado}</td></tr>`;
-        });
-        html += "</table>";
-        relatorioDiv.innerHTML = html;
-      } catch(err) {
-        console.error(err);
-        relatorioDiv.innerHTML = "<p>Erro ao carregar compromissos.</p>";
-      }
-    }
-
-    form.addEventListener("submit", async function(e){
+    // Salvar novo compromisso
+    document.getElementById("formCompromisso").addEventListener("submit", function(e){
       e.preventDefault();
       const dados = {
+        acao: "salvar",
         data: document.getElementById("data").value,
         horario: document.getElementById("horario").value,
         compromisso: document.getElementById("compromisso").value,
-        baixado: document.getElementById("baixado").value
+        baixado: "Não"
       };
-      const ok = await salvarCompromisso(dados);
-      if (ok) {
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(dados)
+      })
+      .then(res => res.json())
+      .then(() => {
         alert("✅ Compromisso salvo!");
-        form.reset();
-        carregar("Não"); // Atualiza lista de abertos
-      } else {
-        alert("Erro ao salvar compromisso");
-      }
+        this.reset();
+        carregar();
+      })
+      .catch(err => console.error("Erro:", err));
     });
 
-    // Carrega compromissos abertos ao abrir
-    window.onload = () => carregar("Não");
+    // Carregar todos compromissos
+    function carregar() {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(dados => {
+          const div = document.getElementById("relatorio");
+          if (!dados || dados.length === 0) {
+            div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
+            return;
+          }
+
+          let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Baixado</th></tr>";
+          dados.forEach(c => {
+            const checked = c.baixado === "Sim" ? "checked" : "";
+            html += `<tr>
+              <td>${c.data}</td>
+              <td>${c.horario}</td>
+              <td>${c.compromisso}</td>
+              <td><input type="checkbox" ${checked} onchange="atualizar(${c.id}, this.checked)"></td>
+            </tr>`;
+          });
+          html += "</table>";
+          div.innerHTML = html;
+        })
+        .catch(err => console.error("Erro ao carregar:", err));
+    }
+
+    // Atualizar status quando marcar checkbox
+    function atualizar(id, marcado) {
+      const dados = {
+        acao: "atualizar",
+        id: id,
+        baixado: marcado ? "Sim" : "Não"
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(dados)
+      })
+      .then(res => res.json())
+      .then(() => console.log("✅ Status atualizado"))
+      .catch(err => console.error("Erro:", err));
+    }
+
+    // Carregar ao abrir
+    carregar();
   </script>
 </body>
 </html>
