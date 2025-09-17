@@ -1,96 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Agenda de Compromissos</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
-  button { cursor: pointer; background: #007bff; color: white; border: none; }
-  button:hover { background: #0056b3; }
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-  th { background: #f2f2f2; }
-</style>
+  <meta charset="UTF-8">
+  <title>Agenda de Compromissos</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
+    button { cursor: pointer; background: #007bff; color: white; border: none; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f2f2f2; }
+  </style>
 </head>
 <body>
-<h2>📅 Agenda de Compromissos</h2>
+  <h2>📅 Agenda de Compromissos</h2>
 
-<form id="formCompromisso">
-  <label>Data:</label>
-  <input type="date" id="data" required>
-  <label>Horário:</label>
-  <input type="time" id="horario" required>
-  <label>Compromisso:</label>
-  <input type="text" id="compromisso" required>
-  <label>Status:</label>
-  <select id="baixado">
-    <option value="Não">Não</option>
-    <option value="Sim">Sim</option>
-  </select>
-  <button type="submit">Salvar Compromisso</button>
-</form>
+  <!-- Formulário -->
+  <form id="formCompromisso">
+    <label>Data:</label>
+    <input type="date" id="data" required>
 
-<hr>
+    <label>Horário:</label>
+    <input type="time" id="horario" required>
 
-<button onclick="carregar('Não')">📌 Ver Abertos</button>
-<button onclick="carregar('Sim')">✅ Ver Baixados</button>
+    <label>Compromisso:</label>
+    <input type="text" id="compromisso" required>
 
-<div id="relatorio"></div>
+    <label>Status:</label>
+    <select id="baixado">
+      <option value="Não">Não</option>
+      <option value="Sim">Sim</option>
+    </select>
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
+    <button type="submit">Salvar Compromisso</button>
+  </form>
 
-// Salvar compromisso (POST)
-document.getElementById("formCompromisso").addEventListener("submit", function(e){
-  e.preventDefault();
-  const dados = {
-    data: document.getElementById("data").value,
-    horario: document.getElementById("horario").value,
-    compromisso: document.getElementById("compromisso").value,
-    baixado: document.getElementById("baixado").value
-  };
+  <hr>
 
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(dados),
-    mode: "no-cors" // evita bloqueio CORS
-  }).then(() => {
-    alert("✅ Compromisso salvo!");
-    this.reset();
-    document.getElementById("relatorio").innerHTML = "";
-  }).catch(err => console.error(err));
-});
+  <!-- Botões para filtrar -->
+  <button onclick="carregar('Não')">📌 Ver Abertos</button>
+  <button onclick="carregar('Sim')">✅ Ver Baixados</button>
 
-// Carregar compromissos (GET) via JSONP
-function carregar(status){
-  const callbackName = 'callback_' + new Date().getTime();
-  window[callbackName] = function(dados){
-    const div = document.getElementById("relatorio");
-    div.innerHTML = "";
-    if(!dados || dados.length === 0){
-      div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
-      return;
-    }
-    let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
-    dados.forEach(c=>{
-      html += `<tr>
-        <td>${c.data}</td>
-        <td>${c.horario}</td>
-        <td>${c.compromisso}</td>
-        <td>${c.baixado}</td>
-      </tr>`;
+  <div id="relatorio"></div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
+
+    // Salvar compromisso
+    document.getElementById("formCompromisso").addEventListener("submit", function(e){
+      e.preventDefault();
+      const dados = {
+        data: document.getElementById("data").value,
+        horario: document.getElementById("horario").value,
+        compromisso: document.getElementById("compromisso").value,
+        baixado: document.getElementById("baixado").value
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(dados)
+      })
+      .then(res => res.json())
+      .then(() => {
+        alert("✅ Compromisso salvo!");
+        this.reset();
+        document.getElementById("relatorio").innerHTML = "";
+      })
+      .catch(err => console.error(err));
     });
-    html += "</table>";
-    div.innerHTML = html;
-    document.body.removeChild(script);
-    delete window[callbackName];
-  };
 
-  const script = document.createElement('script');
-  script.src = API_URL + '?status=' + encodeURIComponent(status) + '&callback=' + callbackName;
-  document.body.appendChild(script);
-}
-</script>
+    // Função para JSONP
+    function carregar(status) {
+      const script = document.createElement('script');
+      const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+      script.src = `${API_URL}?status=${status}&callback=${callbackName}`;
+
+      window[callbackName] = function(dados) {
+        const div = document.getElementById("relatorio");
+        div.innerHTML = ""; // limpa antes de exibir
+
+        if (!dados || dados.length === 0) {
+          div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
+          document.body.removeChild(script);
+          delete window[callbackName];
+          return;
+        }
+
+        let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
+        dados.forEach(c => {
+          html += `<tr>
+            <td>${c.data}</td>
+            <td>${c.horario}</td>
+            <td>${c.compromisso}</td>
+            <td>${c.baixado}</td>
+          </tr>`;
+        });
+        html += "</table>";
+        div.innerHTML = html;
+
+        // remove o script JSONP depois
+        document.body.removeChild(script);
+        delete window[callbackName];
+      };
+
+      document.body.appendChild(script);
+    }
+  </script>
 </body>
 </html>
