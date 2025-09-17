@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Agenda de Compromissos</title>
   <style>
-    body { font-family: Arial; margin: 20px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
     input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
     button { cursor: pointer; background: #007bff; color: white; border: none; }
     button:hover { background: #0056b3; }
@@ -16,6 +16,7 @@
 <body>
   <h2>📅 Agenda de Compromissos</h2>
 
+  <!-- Formulário -->
   <form id="formCompromisso">
     <label>Data:</label>
     <input type="date" id="data" required>
@@ -36,18 +37,21 @@
   </form>
 
   <hr>
+
+  <!-- Botões para filtrar -->
   <button onclick="carregar('Não')">📌 Ver Abertos</button>
   <button onclick="carregar('Sim')">✅ Ver Baixados</button>
 
   <div id="relatorio"></div>
 
   <script>
-    // Cole a URL do Web App do Apps Script aqui:
-    const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
+    // URL do Web App publicado
+    const API_URL = "https://script.google.com/macros/s/AKfycbz4C2XiroyAwZSfVJ2RVP-7eLDQz0wrldaiewsBy9gLT_xqoC8QaGqqaN5KxAML6Xm-/exec";
 
     // Salvar compromisso
     document.getElementById("formCompromisso").addEventListener("submit", function(e){
       e.preventDefault();
+
       const dados = {
         data: document.getElementById("data").value,
         horario: document.getElementById("horario").value,
@@ -62,8 +66,9 @@
       .then(res => res.json())
       .then(() => {
         alert("✅ Compromisso salvo!");
-        this.reset();
-        carregar('Não'); // Atualiza a lista
+        // Limpa formulário e relatório
+        document.getElementById("formCompromisso").reset();
+        document.getElementById("relatorio").innerHTML = "";
       })
       .catch(err => console.error(err));
     });
@@ -74,10 +79,13 @@
         .then(res => res.json())
         .then(dados => {
           const div = document.getElementById("relatorio");
+          div.innerHTML = "";
+
           if (!dados || dados.length === 0) {
             div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
             return;
           }
+
           let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
           dados.forEach(c => {
             html += `<tr>
@@ -90,11 +98,11 @@
           html += "</table>";
           div.innerHTML = html;
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          document.getElementById("relatorio").innerHTML = "<p>Erro ao carregar compromissos.</p>";
+        });
     }
-
-    // Carrega automaticamente compromissos abertos
-    carregar('Não');
   </script>
 </body>
 </html>
