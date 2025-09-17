@@ -16,29 +16,23 @@
 <body>
   <h2>📅 Agenda de Compromissos</h2>
 
-  <!-- Formulário -->
   <form id="formCompromisso">
     <label>Data:</label>
     <input type="date" id="data" required>
-
     <label>Horário:</label>
     <input type="time" id="horario" required>
-
     <label>Compromisso:</label>
     <input type="text" id="compromisso" required>
-
     <label>Status:</label>
     <select id="baixado">
       <option value="Não">Não</option>
       <option value="Sim">Sim</option>
     </select>
-
     <button type="submit">Salvar Compromisso</button>
   </form>
 
   <hr>
 
-  <!-- Botões para filtrar -->
   <button onclick="carregar('Não')">📌 Ver Abertos</button>
   <button onclick="carregar('Sim')">✅ Ver Baixados</button>
 
@@ -47,8 +41,11 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
 
+    const form = document.getElementById("formCompromisso");
+    const relatorioDiv = document.getElementById("relatorio");
+
     // Salvar compromisso
-    document.getElementById("formCompromisso").addEventListener("submit", function(e){
+    form.addEventListener("submit", async function(e){
       e.preventDefault();
       const dados = {
         data: document.getElementById("data").value,
@@ -57,48 +54,53 @@
         baixado: document.getElementById("baixado").value
       };
 
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(dados)
-      })
-      .then(res => res.json())
-      .then(() => {
-        alert("✅ Compromisso salvo!");
-        this.reset(); // Limpa formulário
-        carregar(dados.baixado); // Atualiza automaticamente a lista
-      })
-      .catch(err => console.error("Erro ao salvar:", err));
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(dados)
+        });
+        const json = await res.json();
+        if (json.status === "ok") {
+          alert("✅ Compromisso salvo!");
+          form.reset();              // limpa formulário
+          relatorioDiv.innerHTML = ""; // limpa lista
+          carregar(dados.baixado);   // recarrega os lançamentos
+        } else {
+          alert("❌ Erro ao salvar: " + (json.msg || ""));
+        }
+      } catch(err) {
+        console.error(err);
+        alert("❌ Erro ao salvar compromisso");
+      }
     });
 
     // Carregar compromissos
-    function carregar(status) {
-      fetch(`${API_URL}?status=${status}`)
-        .then(res => res.json())
-        .then(dados => {
-          const div = document.getElementById("relatorio");
-          div.innerHTML = ""; // Limpa relatório antes
+    async function carregar(status) {
+      relatorioDiv.innerHTML = "<p>Carregando...</p>";
+      try {
+        const res = await fetch(`${API_URL}?status=${status}`);
+        const dados = await res.json();
 
-          if (!dados || dados.length === 0) {
-            div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
-            return;
-          }
+        if (!dados || dados.length === 0) {
+          relatorioDiv.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
+          return;
+        }
 
-          let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
-          dados.forEach(c => {
-            html += `<tr>
-              <td>${c.data}</td>
-              <td>${c.horario}</td>
-              <td>${c.compromisso}</td>
-              <td>${c.baixado}</td>
-            </tr>`;
-          });
-          html += "</table>";
-          div.innerHTML = html;
-        })
-        .catch(err => {
-          console.error("Erro ao carregar compromissos:", err);
-          document.getElementById("relatorio").innerHTML = "<p>Erro ao carregar compromissos.</p>";
+        let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
+        dados.forEach(c => {
+          html += `<tr>
+            <td>${c.data}</td>
+            <td>${c.horario}</td>
+            <td>${c.compromisso}</td>
+            <td>${c.baixado}</td>
+          </tr>`;
         });
+        html += "</table>";
+        relatorioDiv.innerHTML = html;
+      } catch(err) {
+        console.error(err);
+        relatorioDiv.innerHTML = "<p>Erro ao carregar compromissos.</p>";
+      }
     }
   </script>
 </body>
