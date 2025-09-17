@@ -39,24 +39,18 @@
   <div id="relatorio"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwtFgnYj7EEhNYaYdRjnSraZKHEXECl1O22mGKCz1ZRqgStbP5iZ2QnOYHEJJZcBbno/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwpsicy2aHZikwl68k6PLUoHAOutmk9v7W4MtFl1iDFWPXUuOfm2fzWeqJQbv3O7S_4/exec";
 
     const form = document.getElementById("formCompromisso");
     const relatorioDiv = document.getElementById("relatorio");
 
     async function salvarCompromisso(dados) {
       try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(dados)
-        });
+        const res = await fetch(API_URL, {method: "POST", body: JSON.stringify(dados)});
         const json = await res.json();
-        if (json.status === "ok") return true;
-        alert("Erro ao salvar: " + (json.msg || ""));
-        return false;
+        return json.status === "ok";
       } catch (err) {
         console.error(err);
-        alert("Erro ao salvar compromisso");
         return false;
       }
     }
@@ -66,20 +60,13 @@
       try {
         const res = await fetch(`${API_URL}?status=${status}`);
         const dados = await res.json();
-
         if (!dados || dados.length === 0) {
           relatorioDiv.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
           return;
         }
-
         let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
         dados.forEach(c => {
-          html += `<tr>
-            <td>${c.data}</td>
-            <td>${c.horario}</td>
-            <td>${c.compromisso}</td>
-            <td>${c.baixado}</td>
-          </tr>`;
+          html += `<tr><td>${c.data}</td><td>${c.horario}</td><td>${c.compromisso}</td><td>${c.baixado}</td></tr>`;
         });
         html += "</table>";
         relatorioDiv.innerHTML = html;
@@ -101,11 +88,13 @@
       if (ok) {
         alert("✅ Compromisso salvo!");
         form.reset();
-        carregar(dados.baixado);
+        carregar("Não"); // Atualiza lista de abertos
+      } else {
+        alert("Erro ao salvar compromisso");
       }
     });
 
-    // Carrega automaticamente os compromissos abertos ao abrir a página
+    // Carrega compromissos abertos ao abrir
     window.onload = () => carregar("Não");
   </script>
 </body>
