@@ -45,13 +45,12 @@
   <div id="relatorio"></div>
 
   <script>
-    // URL do Web App publicado
-    const API_URL = "https://script.google.com/macros/s/AKfycbz4C2XiroyAwZSfVJ2RVP-7eLDQz0wrldaiewsBy9gLT_xqoC8QaGqqaN5KxAML6Xm-/exec";
+    // COLE AQUI A URL DO SEU WEB APP
+    const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
 
     // Salvar compromisso
     document.getElementById("formCompromisso").addEventListener("submit", function(e){
       e.preventDefault();
-
       const dados = {
         data: document.getElementById("data").value,
         horario: document.getElementById("horario").value,
@@ -66,7 +65,7 @@
       .then(res => res.json())
       .then(() => {
         alert("✅ Compromisso salvo!");
-        // Limpa formulário e relatório
+        // Limpa formulário e relatório exibido
         document.getElementById("formCompromisso").reset();
         document.getElementById("relatorio").innerHTML = "";
       })
@@ -79,7 +78,7 @@
         .then(res => res.json())
         .then(dados => {
           const div = document.getElementById("relatorio");
-          div.innerHTML = "";
+          div.innerHTML = ""; // Limpa antes de mostrar
 
           if (!dados || dados.length === 0) {
             div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
@@ -98,10 +97,7 @@
           html += "</table>";
           div.innerHTML = html;
         })
-        .catch(err => {
-          console.error(err);
-          document.getElementById("relatorio").innerHTML = "<p>Erro ao carregar compromissos.</p>";
-        });
+        .catch(err => console.error(err));
     }
   </script>
 </body>
