@@ -39,42 +39,28 @@
   <div id="relatorio"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtFgnYj7EEhNYaYdRjnSraZKHEXECl1O22mGKCz1ZRqgStbP5iZ2QnOYHEJJZcBbno/exec";
 
     const form = document.getElementById("formCompromisso");
     const relatorioDiv = document.getElementById("relatorio");
 
-    // Salvar compromisso
-    form.addEventListener("submit", async function(e){
-      e.preventDefault();
-      const dados = {
-        data: document.getElementById("data").value,
-        horario: document.getElementById("horario").value,
-        compromisso: document.getElementById("compromisso").value,
-        baixado: document.getElementById("baixado").value
-      };
-
+    async function salvarCompromisso(dados) {
       try {
         const res = await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify(dados)
         });
         const json = await res.json();
-        if (json.status === "ok") {
-          alert("✅ Compromisso salvo!");
-          form.reset();              // limpa formulário
-          relatorioDiv.innerHTML = ""; // limpa lista
-          carregar(dados.baixado);   // recarrega os lançamentos
-        } else {
-          alert("❌ Erro ao salvar: " + (json.msg || ""));
-        }
-      } catch(err) {
+        if (json.status === "ok") return true;
+        alert("Erro ao salvar: " + (json.msg || ""));
+        return false;
+      } catch (err) {
         console.error(err);
-        alert("❌ Erro ao salvar compromisso");
+        alert("Erro ao salvar compromisso");
+        return false;
       }
-    });
+    }
 
-    // Carregar compromissos
     async function carregar(status) {
       relatorioDiv.innerHTML = "<p>Carregando...</p>";
       try {
@@ -102,6 +88,25 @@
         relatorioDiv.innerHTML = "<p>Erro ao carregar compromissos.</p>";
       }
     }
+
+    form.addEventListener("submit", async function(e){
+      e.preventDefault();
+      const dados = {
+        data: document.getElementById("data").value,
+        horario: document.getElementById("horario").value,
+        compromisso: document.getElementById("compromisso").value,
+        baixado: document.getElementById("baixado").value
+      };
+      const ok = await salvarCompromisso(dados);
+      if (ok) {
+        alert("✅ Compromisso salvo!");
+        form.reset();
+        carregar(dados.baixado);
+      }
+    });
+
+    // Carrega automaticamente os compromissos abertos ao abrir a página
+    window.onload = () => carregar("Não");
   </script>
 </body>
 </html>
