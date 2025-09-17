@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Agenda de Compromissos</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
+    body { font-family: Arial; margin: 20px; }
     input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
     button { cursor: pointer; background: #007bff; color: white; border: none; }
     button:hover { background: #0056b3; }
@@ -16,7 +16,6 @@
 <body>
   <h2>📅 Agenda de Compromissos</h2>
 
-  <!-- Formulário -->
   <form id="formCompromisso">
     <label>Data:</label>
     <input type="date" id="data" required>
@@ -37,16 +36,14 @@
   </form>
 
   <hr>
-
-  <!-- Botões para filtrar -->
   <button onclick="carregar('Não')">📌 Ver Abertos</button>
   <button onclick="carregar('Sim')">✅ Ver Baixados</button>
 
   <div id="relatorio"></div>
 
   <script>
-    // URL do seu Web App Google Apps Script
-    const API_URL = "https://script.google.com/macros/s/AKfycbz4C2XiroyAwZSfVJ2RVP-7eLDQz0wrldaiewsBy9gLT_xqoC8QaGqqaN5KxAML6Xm-/exec";
+    // Cole a URL do Web App do Apps Script aqui:
+    const API_URL = "https://script.google.com/macros/s/AKfycbzebI7ezmiDS-c_1m9yVsKMUXZe2tNlUwM-_SsIdJXtsy6sPKiFTHNMpGqDxFrzIAve/exec";
 
     // Salvar compromisso
     document.getElementById("formCompromisso").addEventListener("submit", function(e){
@@ -66,6 +63,7 @@
       .then(() => {
         alert("✅ Compromisso salvo!");
         this.reset();
+        carregar('Não'); // Atualiza a lista
       })
       .catch(err => console.error(err));
     });
@@ -80,7 +78,6 @@
             div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
             return;
           }
-
           let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
           dados.forEach(c => {
             html += `<tr>
@@ -95,6 +92,9 @@
         })
         .catch(err => console.error(err));
     }
+
+    // Carrega automaticamente compromissos abertos
+    carregar('Não');
   </script>
 </body>
 </html>
