@@ -45,6 +45,7 @@
   <div id="relatorio"></div>
 
   <script>
+    // URL do Web App publicado
     const API_URL = "https://script.google.com/macros/s/AKfycbw9VUT5L6nre7pWnI3lOyuCSTbKV92aFW8ETFDM3QwHdevq6MWVf7e8ptPR7Jq09YTa/exec";
 
     // Salvar compromisso
@@ -67,10 +68,10 @@
         this.reset();
         document.getElementById("relatorio").innerHTML = "";
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error("Erro ao salvar:", err));
     });
 
-    // Função para JSONP
+    // Carregar compromissos usando JSONP
     function carregar(status) {
       const script = document.createElement('script');
       const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -78,28 +79,25 @@
 
       window[callbackName] = function(dados) {
         const div = document.getElementById("relatorio");
-        div.innerHTML = ""; // limpa antes de exibir
+        div.innerHTML = "";
 
         if (!dados || dados.length === 0) {
           div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
-          document.body.removeChild(script);
-          delete window[callbackName];
-          return;
+        } else {
+          let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
+          dados.forEach(c => {
+            html += `<tr>
+              <td>${c.data}</td>
+              <td>${c.horario}</td>
+              <td>${c.compromisso}</td>
+              <td>${c.baixado}</td>
+            </tr>`;
+          });
+          html += "</table>";
+          div.innerHTML = html;
         }
 
-        let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Status</th></tr>";
-        dados.forEach(c => {
-          html += `<tr>
-            <td>${c.data}</td>
-            <td>${c.horario}</td>
-            <td>${c.compromisso}</td>
-            <td>${c.baixado}</td>
-          </tr>`;
-        });
-        html += "</table>";
-        div.innerHTML = html;
-
-        // remove o script JSONP depois
+        // Remove o script JSONP
         document.body.removeChild(script);
         delete window[callbackName];
       };
