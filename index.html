@@ -373,6 +373,12 @@
       transform: translateY(-1px);
     }
 
+    button:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .btn-primary {
       background: var(--primary);
       color: white;
@@ -973,7 +979,7 @@
           <div>
 
             <h2 class="card-title">
-              Compromissos de hoje
+              Compromissos
             </h2>
 
             <p class="card-subtitle">
@@ -1152,11 +1158,13 @@
   <script>
 
     /* =====================================================
-       CONFIGURAÇÃO
+       CONFIGURAÇÃO DA API
+       
+       URL DO GOOGLE APPS SCRIPT
     ====================================================== */
 
     const API_URL =
-      "AKfycbzudaw0CEVjIc7k-3TaE2xRrnzxI91DUiG-sedDJCHOrC7Vgg-wlR_z9nSHMTo0peiv";
+      "https://script.google.com/macros/s/AKfycbx3WaWDuPnsrE5VnER1yygkRsEkG76ZLsuhRC0_yyXW2AI0usQ1h_DVK49M7MTq_Ss/exec";
 
 
     let compromissos = [];
@@ -1278,6 +1286,39 @@
 
 
     /* =====================================================
+       ESCAPE JAVASCRIPT
+    ====================================================== */
+
+    function escapeJs(valor) {
+
+      return String(
+        valor ?? ""
+      )
+      .replace(
+        /\\/g,
+        "\\\\"
+      )
+      .replace(
+        /'/g,
+        "\\'"
+      )
+      .replace(
+        /"/g,
+        '\\"'
+      )
+      .replace(
+        /\n/g,
+        "\\n"
+      )
+      .replace(
+        /\r/g,
+        "\\r"
+      );
+
+    }
+
+
+    /* =====================================================
        MOSTRAR DATA DE HOJE
     ====================================================== */
 
@@ -1350,7 +1391,7 @@
 
     form.addEventListener(
       "submit",
-      function(e) {
+      async function(e) {
 
         e.preventDefault();
 
@@ -1358,6 +1399,7 @@
           document.getElementById(
             "btnSalvar"
           );
+
 
         const dados = {
 
@@ -1407,82 +1449,92 @@
           "Salvando...";
 
 
-        fetch(
-          API_URL,
-          {
+        try {
 
-            method: "POST",
+          const resposta =
+            await fetch(
+              API_URL,
+              {
 
-            body:
-              JSON.stringify(
-                dados
-              )
+                method: "POST",
 
-          }
-        )
-        .then(
-          function(res) {
+                body:
+                  JSON.stringify(
+                    dados
+                  )
 
-            if (!res.ok) {
-
-              throw new Error(
-                "Erro HTTP " +
-                res.status
-              );
-
-            }
-
-            return res.json();
-
-          }
-        )
-        .then(
-          function() {
-
-            mostrarToast(
-              "✅ Compromisso salvo com sucesso!"
+              }
             );
 
-            form.reset();
 
-            document
-              .getElementById(
-                "data"
-              )
-              .value =
-              dataSelecionada ||
-              hojeISO();
+          if (!resposta.ok) {
 
-            carregar();
-
-          }
-        )
-        .catch(
-          function(erro) {
-
-            console.error(
-              "Erro ao salvar:",
-              erro
-            );
-
-            mostrarToast(
-              "Não foi possível salvar o compromisso.",
-              "error"
+            throw new Error(
+              "Erro HTTP " +
+              resposta.status
             );
 
           }
-        )
-        .finally(
-          function() {
 
-            btn.disabled =
-              false;
 
-            btn.textContent =
-              "💾 Salvar compromisso";
+          const resultado =
+            await resposta.json();
+
+
+          if (
+            resultado &&
+            resultado.sucesso === false
+          ) {
+
+            throw new Error(
+              resultado.erro ||
+              "Erro ao salvar."
+            );
 
           }
-        );
+
+
+          mostrarToast(
+            "✅ Compromisso salvo com sucesso!"
+          );
+
+
+          form.reset();
+
+
+          document
+            .getElementById(
+              "data"
+            )
+            .value =
+            dataSelecionada ||
+            hojeISO();
+
+
+          carregar();
+
+        } catch (erro) {
+
+          console.error(
+            "Erro ao salvar:",
+            erro
+          );
+
+          mostrarToast(
+            erro.message ||
+            "Não foi possível salvar o compromisso.",
+            "error"
+          );
+
+        } finally {
+
+          btn.disabled =
+            false;
+
+          btn.textContent =
+            "💾 Salvar compromisso";
+
+        }
 
       }
     );
@@ -1492,7 +1544,7 @@
        CARREGAR
     ====================================================== */
 
-    function carregar() {
+    async function carregar() {
 
       relatorio.innerHTML = `
 
@@ -1507,73 +1559,87 @@
       `;
 
 
-      fetch(
-        API_URL
-      )
-      .then(
-        function(res) {
+      try {
 
-          if (!res.ok) {
+        const resposta =
+          await fetch(
+            API_URL + "?t=" + Date.now()
+          );
+
+
+        if (!resposta.ok) {
+
+          throw new Error(
+            "Erro HTTP " +
+            resposta.status
+          );
+
+        }
+
+
+        const dados =
+          await resposta.json();
+
+
+        if (
+          !Array.isArray(dados)
+        ) {
+
+          if (
+            dados &&
+            dados.sucesso === false
+          ) {
 
             throw new Error(
-              "Erro HTTP " +
-              res.status
+              dados.erro ||
+              "Erro retornado pela API."
             );
 
           }
 
-          return res.json();
+          dados = [];
 
         }
-      )
-      .then(
-        function(dados) {
 
-          if (
-            !Array.isArray(dados)
-          ) {
 
-            dados = [];
+        compromissos =
+          dados;
 
-          }
 
-          compromissos =
-            dados;
+        renderizar();
 
-          renderizar();
+      } catch (erro) {
 
-        }
-      )
-      .catch(
-        function(erro) {
+        console.error(
+          "Erro ao carregar:",
+          erro
+        );
 
-          console.error(
-            "Erro ao carregar:",
-            erro
-          );
 
-          relatorio.innerHTML = `
+        relatorio.innerHTML = `
 
-            <div class="empty">
+          <div class="empty">
 
-              <div class="empty-icon">
-                ⚠️
-              </div>
-
-              <h3>
-                Não foi possível carregar
-              </h3>
-
-              <p>
-                Verifique a conexão com a API.
-              </p>
-
+            <div class="empty-icon">
+              ⚠️
             </div>
 
-          `;
+            <h3>
+              Não foi possível carregar
+            </h3>
 
-        }
-      );
+            <p>
+              ${escapeHtml(
+                erro.message ||
+                "Verifique a conexão com a API."
+              )}
+            </p>
+
+          </div>
+
+        `;
+
+      }
 
     }
 
@@ -1691,6 +1757,11 @@
             data === hoje;
 
 
+          /*
+           * Considera "Agora" dentro de
+           * uma janela de 60 minutos.
+           */
+
           const isAgora =
             isHoje &&
             minutos <= minutosAgora &&
@@ -1700,11 +1771,12 @@
           const concluido =
             String(
               c.baixado || ""
-            ).toLowerCase() ===
+            ).trim().toLowerCase() ===
             "sim";
 
 
           let badge = "";
+
 
           if (concluido) {
 
@@ -1802,9 +1874,11 @@
                   >
 
                   <span>
-                    ${concluido
-                      ? "Baixado"
-                      : "Marcar como concluído"}
+                    ${
+                      concluido
+                        ? "Baixado"
+                        : "Marcar como concluído"
+                    }
                   </span>
 
                 </label>
@@ -1839,7 +1913,7 @@
 
             return String(
               item.baixado || ""
-            ).toLowerCase() ===
+            ).trim().toLowerCase() ===
             "sim";
 
           }
@@ -1889,7 +1963,7 @@
        ATUALIZAR STATUS
     ====================================================== */
 
-    function atualizar(
+    async function atualizar(
       id,
       marcado
     ) {
@@ -1910,65 +1984,78 @@
       };
 
 
-      fetch(
-        API_URL,
-        {
+      try {
 
-          method: "POST",
+        const resposta =
+          await fetch(
+            API_URL,
+            {
 
-          body:
-            JSON.stringify(
-              dados
-            )
+              method: "POST",
 
-        }
-      )
-      .then(
-        function(res) {
+              body:
+                JSON.stringify(
+                  dados
+                )
 
-          if (!res.ok) {
-
-            throw new Error(
-              "Erro HTTP " +
-              res.status
-            );
-
-          }
-
-          return res.json();
-
-        }
-      )
-      .then(
-        function() {
-
-          mostrarToast(
-            marcado
-              ? "✅ Compromisso concluído."
-              : "Compromisso reaberto."
+            }
           );
 
-          carregar();
 
-        }
-      )
-      .catch(
-        function(erro) {
+        if (!resposta.ok) {
 
-          console.error(
-            "Erro ao atualizar:",
-            erro
+          throw new Error(
+            "Erro HTTP " +
+            resposta.status
           );
 
-          mostrarToast(
-            "Erro ao atualizar o compromisso.",
-            "error"
+        }
+
+
+        const resultado =
+          await resposta.json();
+
+
+        if (
+          resultado &&
+          resultado.sucesso === false
+        ) {
+
+          throw new Error(
+            resultado.erro ||
+            "Erro ao atualizar."
           );
 
-          carregar();
-
         }
-      );
+
+
+        mostrarToast(
+          marcado
+            ? "✅ Compromisso concluído."
+            : "Compromisso reaberto."
+        );
+
+
+        carregar();
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao atualizar:",
+          erro
+        );
+
+
+        mostrarToast(
+          erro.message ||
+          "Erro ao atualizar o compromisso.",
+          "error"
+        );
+
+
+        carregar();
+
+      }
 
     }
 
@@ -2001,6 +2088,7 @@
 
       dataSelecionada =
         data;
+
 
       renderizar();
 
@@ -2218,41 +2306,6 @@
 
 
     /* =====================================================
-       ESCAPE JAVASCRIPT
-    ====================================================== */
-
-    function escapeJs(
-      valor
-    ) {
-
-      return String(
-        valor ?? ""
-      )
-      .replace(
-        /\\/g,
-        "\\\\"
-      )
-      .replace(
-        /'/g,
-        "\\'"
-      )
-      .replace(
-        /"/g,
-        '\\"'
-      )
-      .replace(
-        /\n/g,
-        "\\n"
-      )
-      .replace(
-        /\r/g,
-        "\\r"
-      );
-
-    }
-
-
-    /* =====================================================
        INICIALIZAÇÃO
     ====================================================== */
 
@@ -2269,14 +2322,14 @@
     setInterval(
       function() {
 
+        const hoje =
+          hojeISO();
+
+
         /*
          * Se mudou o dia,
          * muda automaticamente para hoje.
          */
-
-        const hoje =
-          hojeISO();
-
 
         if (
           dataSelecionada !==
@@ -2285,6 +2338,7 @@
 
           dataSelecionada =
             hoje;
+
 
           document
             .getElementById(
