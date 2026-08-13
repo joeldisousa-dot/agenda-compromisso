@@ -2,113 +2,2307 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Agenda de Compromissos</title>
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, select, button { padding: 8px; margin: 5px 0; width: 100%; }
-    button { cursor: pointer; background: #007bff; color: white; border: none; }
-    button:hover { background: #0056b3; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background: #f2f2f2; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+
+      --warning: #d97706;
+      --warning-light: #fffbeb;
+
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+
+      --dark: #111827;
+      --text: #374151;
+      --muted: #6b7280;
+
+      --background: #f3f4f6;
+      --card: #ffffff;
+      --border: #e5e7eb;
+
+      --radius: 16px;
+
+      --shadow:
+        0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+      background: var(--background);
+      color: var(--text);
+    }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .header {
+      background:
+        linear-gradient(
+          135deg,
+          #111827 0%,
+          #1e3a8a 100%
+        );
+
+      color: white;
+      padding: 28px 24px;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,.12);
+
+      font-size: 27px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+
+      color: rgba(255,255,255,.7);
+
+      font-size: 14px;
+    }
+
+    .today-info {
+      text-align: right;
+    }
+
+    .today-info .label {
+      display: block;
+
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .today-info .date {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* =====================================================
+       CONTAINER
+    ===================================================== */
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+
+      margin: 0 auto;
+      padding: 28px 24px 50px;
+    }
+
+    /* =====================================================
+       STATS
+    ===================================================== */
+
+    .stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 18px;
+
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: var(--card);
+
+      border: 1px solid var(--border);
+
+      border-radius: var(--radius);
+
+      padding: 20px;
+
+      box-shadow: var(--shadow);
+
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+
+      flex-shrink: 0;
+
+      border-radius: 13px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 22px;
+    }
+
+    .stat-icon.blue {
+      background: var(--primary-light);
+    }
+
+    .stat-icon.green {
+      background: var(--success-light);
+    }
+
+    .stat-icon.orange {
+      background: var(--warning-light);
+    }
+
+    .stat-icon.red {
+      background: var(--danger-light);
+    }
+
+    .stat-title {
+      font-size: 13px;
+      color: var(--muted);
+
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 25px;
+      font-weight: 750;
+      color: var(--dark);
+    }
+
+    /* =====================================================
+       GRID PRINCIPAL
+    ===================================================== */
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        380px;
+
+      gap: 24px;
+
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+
+      border: 1px solid var(--border);
+
+      border-radius: var(--radius);
+
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 20px 22px;
+
+      border-bottom: 1px solid var(--border);
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 15px;
+    }
+
+    .card-title {
+      margin: 0;
+
+      color: var(--dark);
+
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card-subtitle {
+      margin: 4px 0 0;
+
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* =====================================================
+       FILTROS
+    ===================================================== */
+
+    .filters {
+      padding: 16px 22px;
+
+      background: #fafafa;
+
+      border-bottom: 1px solid var(--border);
+
+      display: flex;
+      gap: 10px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input,
+    select {
+      width: 100%;
+
+      height: 44px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 10px;
+
+      padding: 0 13px;
+
+      background: white;
+
+      color: var(--dark);
+
+      font-size: 14px;
+
+      outline: none;
+
+      transition:
+        border-color .2s,
+        box-shadow .2s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, .12);
+    }
+
+    /* =====================================================
+       BOTÕES
+    ===================================================== */
+
+    button {
+      height: 44px;
+
+      border: 0;
+
+      border-radius: 10px;
+
+      padding: 0 16px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition:
+        transform .15s,
+        background .2s,
+        box-shadow .2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+
+      box-shadow:
+        0 5px 15px
+        rgba(37, 99, 235, .22);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* =====================================================
+       GRID DE COMPROMISSOS
+    ===================================================== */
+
+    .appointments {
+      padding: 22px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fill,
+          minmax(250px, 1fr)
+        );
+
+      gap: 15px;
+    }
+
+    .appointment {
+      position: relative;
+
+      background: white;
+
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      padding: 17px;
+
+      transition:
+        transform .2s,
+        box-shadow .2s,
+        border-color .2s;
+    }
+
+    .appointment:hover {
+      transform: translateY(-2px);
+
+      border-color: #bfdbfe;
+
+      box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, .08);
+    }
+
+    .appointment.now {
+      border:
+        2px solid var(--primary);
+
+      background:
+        linear-gradient(
+          135deg,
+          #eff6ff,
+          #ffffff
+        );
+    }
+
+    .appointment.done {
+      opacity: .65;
+    }
+
+    .appointment-top {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 14px;
+    }
+
+    .time {
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      font-size: 21px;
+
+      font-weight: 750;
+
+      color: var(--dark);
+    }
+
+    .time-icon {
+      color: var(--primary);
+
+      font-size: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+
+      align-items: center;
+
+      padding: 5px 9px;
+
+      border-radius: 20px;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+    }
+
+    .badge-now {
+      color: #1d4ed8;
+
+      background: #dbeafe;
+    }
+
+    .badge-done {
+      color: #166534;
+
+      background: #dcfce7;
+    }
+
+    .badge-pending {
+      color: #92400e;
+
+      background: #fef3c7;
+    }
+
+    .appointment-title {
+      margin: 0 0 12px;
+
+      color: var(--dark);
+
+      font-size: 16px;
+
+      font-weight: 650;
+
+      line-height: 1.4;
+    }
+
+    .appointment-date {
+      color: var(--muted);
+
+      font-size: 12px;
+
+      margin-bottom: 15px;
+    }
+
+    .appointment-footer {
+      padding-top: 13px;
+
+      border-top: 1px solid var(--border);
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+    .check-container {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      font-size: 13px;
+
+      color: var(--muted);
+
+      cursor: pointer;
+    }
+
+    .check-container input {
+      width: 18px;
+      height: 18px;
+
+      accent-color: var(--success);
+
+      cursor: pointer;
+    }
+
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
+
+    .empty {
+      padding: 60px 20px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+      font-size: 45px;
+
+      margin-bottom: 10px;
+    }
+
+    .empty h3 {
+      margin: 0 0 7px;
+
+      color: var(--dark);
+    }
+
+    .empty p {
+      margin: 0;
+
+      font-size: 14px;
+    }
+
+    /* =====================================================
+       FORMULÁRIO
+    ===================================================== */
+
+    .form {
+      padding: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      color: var(--text);
+    }
+
+    .form-actions {
+      margin-top: 22px;
+    }
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    .loading {
+      padding: 50px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 35px;
+      height: 35px;
+
+      margin: 0 auto 12px;
+
+      border:
+        3px solid #e5e7eb;
+
+      border-top-color:
+        var(--primary);
+
+      border-radius: 50%;
+
+      animation:
+        spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    .toast {
+      position: fixed;
+
+      right: 22px;
+      bottom: 22px;
+
+      min-width: 280px;
+
+      max-width: 400px;
+
+      padding: 14px 17px;
+
+      border-radius: 12px;
+
+      background: #111827;
+
+      color: white;
+
+      box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.2);
+
+      font-size: 14px;
+
+      transform:
+        translateY(120px);
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition:
+        all .3s ease;
+
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform:
+        translateY(0);
+
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: #166534;
+    }
+
+    .toast.error {
+      background: #991b1b;
+    }
+
+    /* =====================================================
+       RESPONSIVO
+    ===================================================== */
+
+    @media (max-width: 1050px) {
+
+      .stats {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 650px) {
+
+      .header {
+        padding: 20px 16px;
+      }
+
+      .header-content {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+      .today-info {
+        text-align: left;
+      }
+
+      .container {
+        padding:
+          18px 14px 40px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+      .filters {
+        padding: 15px;
+      }
+
+      .appointments {
+        padding: 15px;
+
+        grid-template-columns: 1fr;
+      }
+
+      .brand h1 {
+        font-size: 21px;
+      }
+
+    }
   </style>
 </head>
+
 <body>
-  <h2>📅 Agenda de Compromissos</h2>
 
-  <!-- Formulário -->
-  <form id="formCompromisso">
-    <label>Data:</label>
-    <input type="date" id="data" required>
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
-    <label>Horário:</label>
-    <input type="time" id="horario" required>
+  <header class="header">
 
-    <label>Compromisso:</label>
-    <input type="text" id="compromisso" required>
+    <div class="header-content">
 
-    <button type="submit">Salvar Compromisso</button>
-  </form>
+      <div class="brand">
 
-  <hr>
+        <div class="brand-icon">
+          📅
+        </div>
 
-  <button onclick="carregar()">🔄 Atualizar Lista</button>
+        <div>
+          <h1>Agenda de Compromissos</h1>
 
-  <div id="relatorio"></div>
+          <p>
+            Controle diário dos seus compromissos
+          </p>
+        </div>
+
+      </div>
+
+      <div class="today-info">
+
+        <span class="label">
+          Hoje
+        </span>
+
+        <span
+          class="date"
+          id="dataHoje">
+          --
+        </span>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       CONTAINER
+  ====================================================== -->
+
+  <main class="container">
+
+
+    <!-- ===================================================
+         INDICADORES
+    ==================================================== -->
+
+    <section class="stats">
+
+      <div class="stat-card">
+
+        <div class="stat-icon blue">
+          📅
+        </div>
+
+        <div>
+
+          <div class="stat-title">
+            Compromissos hoje
+          </div>
+
+          <div
+            class="stat-value"
+            id="totalHoje">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon orange">
+          ⏰
+        </div>
+
+        <div>
+
+          <div class="stat-title">
+            Pendentes
+          </div>
+
+          <div
+            class="stat-value"
+            id="totalPendentes">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon green">
+          ✓
+        </div>
+
+        <div>
+
+          <div class="stat-title">
+            Concluídos
+          </div>
+
+          <div
+            class="stat-value"
+            id="totalConcluidos">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon red">
+          📋
+        </div>
+
+        <div>
+
+          <div class="stat-title">
+            Total cadastrados
+          </div>
+
+          <div
+            class="stat-value"
+            id="totalGeral">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         LAYOUT
+    ==================================================== -->
+
+    <section class="layout">
+
+
+      <!-- ================================================
+           COMPROMISSOS
+      ================================================= -->
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2 class="card-title">
+              Compromissos de hoje
+            </h2>
+
+            <p class="card-subtitle">
+              Agenda atualizada automaticamente
+            </p>
+
+          </div>
+
+          <button
+            class="btn-secondary"
+            onclick="carregar()">
+
+            🔄 Atualizar
+
+          </button>
+
+        </div>
+
+
+        <!-- FILTROS -->
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="filtroData">
+              Consultar data
+            </label>
+
+            <input
+              type="date"
+              id="filtroData">
+
+          </div>
+
+          <button
+            class="btn-primary"
+            onclick="filtrarData()">
+
+            🔎 Consultar
+
+          </button>
+
+          <button
+            class="btn-secondary"
+            onclick="mostrarHoje()">
+
+            Hoje
+
+          </button>
+
+        </div>
+
+
+        <!-- GRID -->
+
+        <div
+          class="appointments"
+          id="relatorio">
+
+          <div class="loading">
+
+            <div class="spinner"></div>
+
+            Carregando compromissos...
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================
+           NOVO COMPROMISSO
+      ================================================= -->
+
+      <aside class="card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2 class="card-title">
+              Novo compromisso
+            </h2>
+
+            <p class="card-subtitle">
+              Cadastre um novo compromisso
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <form
+          class="form"
+          id="formCompromisso">
+
+
+          <div class="form-group">
+
+            <label for="data">
+              Data
+            </label>
+
+            <input
+              type="date"
+              id="data"
+              required>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="horario">
+              Horário
+            </label>
+
+            <input
+              type="time"
+              id="horario"
+              required>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="compromisso">
+              Compromisso
+            </label>
+
+            <input
+              type="text"
+              id="compromisso"
+              placeholder="Ex.: Reunião com cliente"
+              maxlength="200"
+              required>
+
+          </div>
+
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              class="btn-primary btn-full"
+              id="btnSalvar">
+
+              💾 Salvar compromisso
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </aside>
+
+    </section>
+
+  </main>
+
+
+  <!-- TOAST -->
+
+  <div
+    id="toast"
+    class="toast">
+  </div>
+
 
   <script>
-    const API_URL = "AKfycbzudaw0CEVjIc7k-3TaE2xRrnzxI91DUiG-sedDJCHOrC7Vgg-wlR_z9nSHMTo0peiv";
 
-    // Salvar novo compromisso
-    document.getElementById("formCompromisso").addEventListener("submit", function(e){
-      e.preventDefault();
-      const dados = {
-        acao: "salvar",
-        data: document.getElementById("data").value,
-        horario: document.getElementById("horario").value,
-        compromisso: document.getElementById("compromisso").value,
-        baixado: "Não"
-      };
+    /* =====================================================
+       CONFIGURAÇÃO
+    ====================================================== */
 
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(dados)
-      })
-      .then(res => res.json())
-      .then(() => {
-        alert("✅ Compromisso salvo!");
-        this.reset();
-        carregar();
-      })
-      .catch(err => console.error("Erro:", err));
-    });
+    const API_URL =
+      "AKfycbzudaw0CEVjIc7k-3TaE2xRrnzxI91DUiG-sedDJCHOrC7Vgg-wlR_z9nSHMTo0peiv";
 
-    // Carregar todos compromissos
+
+    let compromissos = [];
+
+    let dataSelecionada = "";
+
+
+    /* =====================================================
+       ELEMENTOS
+    ====================================================== */
+
+    const form =
+      document.getElementById(
+        "formCompromisso"
+      );
+
+    const relatorio =
+      document.getElementById(
+        "relatorio"
+      );
+
+
+    /* =====================================================
+       DATA LOCAL - HOJE
+    ====================================================== */
+
+    function hojeISO() {
+
+      const agora =
+        new Date();
+
+      const ano =
+        agora.getFullYear();
+
+      const mes =
+        String(
+          agora.getMonth() + 1
+        ).padStart(2, "0");
+
+      const dia =
+        String(
+          agora.getDate()
+        ).padStart(2, "0");
+
+      return (
+        ano +
+        "-" +
+        mes +
+        "-" +
+        dia
+      );
+
+    }
+
+
+    /* =====================================================
+       FORMATAÇÃO DE DATA
+    ====================================================== */
+
+    function formatarData(data) {
+
+      if (!data) {
+        return "";
+      }
+
+      const partes =
+        String(data).split("-");
+
+      if (
+        partes.length === 3
+      ) {
+
+        return (
+          partes[2] +
+          "/" +
+          partes[1] +
+          "/" +
+          partes[0]
+        );
+
+      }
+
+      return data;
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ====================================================== */
+
+    function escapeHtml(valor) {
+
+      return String(
+        valor ?? ""
+      )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+    }
+
+
+    /* =====================================================
+       MOSTRAR DATA DE HOJE
+    ====================================================== */
+
+    function configurarDataHoje() {
+
+      const hoje =
+        hojeISO();
+
+      document
+        .getElementById("dataHoje")
+        .textContent =
+        formatarData(
+          hoje
+        );
+
+      document
+        .getElementById("data")
+        .value =
+        hoje;
+
+      document
+        .getElementById("filtroData")
+        .value =
+        hoje;
+
+      dataSelecionada =
+        hoje;
+
+    }
+
+
+    /* =====================================================
+       TOAST
+    ====================================================== */
+
+    function mostrarToast(
+      mensagem,
+      tipo = "success"
+    ) {
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+      toast.textContent =
+        mensagem;
+
+      toast.className =
+        "toast show " +
+        tipo;
+
+      setTimeout(
+        function() {
+
+          toast.classList.remove(
+            "show"
+          );
+
+        },
+        3000
+      );
+
+    }
+
+
+    /* =====================================================
+       SALVAR
+    ====================================================== */
+
+    form.addEventListener(
+      "submit",
+      function(e) {
+
+        e.preventDefault();
+
+        const btn =
+          document.getElementById(
+            "btnSalvar"
+          );
+
+        const dados = {
+
+          acao:
+            "salvar",
+
+          data:
+            document.getElementById(
+              "data"
+            ).value,
+
+          horario:
+            document.getElementById(
+              "horario"
+            ).value,
+
+          compromisso:
+            document.getElementById(
+              "compromisso"
+            ).value.trim(),
+
+          baixado:
+            "Não"
+
+        };
+
+
+        if (
+          !dados.data ||
+          !dados.horario ||
+          !dados.compromisso
+        ) {
+
+          mostrarToast(
+            "Preencha todos os campos.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        btn.disabled = true;
+
+        btn.textContent =
+          "Salvando...";
+
+
+        fetch(
+          API_URL,
+          {
+
+            method: "POST",
+
+            body:
+              JSON.stringify(
+                dados
+              )
+
+          }
+        )
+        .then(
+          function(res) {
+
+            if (!res.ok) {
+
+              throw new Error(
+                "Erro HTTP " +
+                res.status
+              );
+
+            }
+
+            return res.json();
+
+          }
+        )
+        .then(
+          function() {
+
+            mostrarToast(
+              "✅ Compromisso salvo com sucesso!"
+            );
+
+            form.reset();
+
+            document
+              .getElementById(
+                "data"
+              )
+              .value =
+              dataSelecionada ||
+              hojeISO();
+
+            carregar();
+
+          }
+        )
+        .catch(
+          function(erro) {
+
+            console.error(
+              "Erro ao salvar:",
+              erro
+            );
+
+            mostrarToast(
+              "Não foi possível salvar o compromisso.",
+              "error"
+            );
+
+          }
+        )
+        .finally(
+          function() {
+
+            btn.disabled =
+              false;
+
+            btn.textContent =
+              "💾 Salvar compromisso";
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       CARREGAR
+    ====================================================== */
+
     function carregar() {
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(dados => {
-          const div = document.getElementById("relatorio");
-          if (!dados || dados.length === 0) {
-            div.innerHTML = "<p>Nenhum compromisso encontrado.</p>";
-            return;
+
+      relatorio.innerHTML = `
+
+        <div class="loading">
+
+          <div class="spinner"></div>
+
+          Carregando compromissos...
+
+        </div>
+
+      `;
+
+
+      fetch(
+        API_URL
+      )
+      .then(
+        function(res) {
+
+          if (!res.ok) {
+
+            throw new Error(
+              "Erro HTTP " +
+              res.status
+            );
+
           }
 
-          let html = "<table><tr><th>Data</th><th>Hora</th><th>Compromisso</th><th>Baixado</th></tr>";
-          dados.forEach(c => {
-            const checked = c.baixado === "Sim" ? "checked" : "";
-            html += `<tr>
-              <td>${c.data}</td>
-              <td>${c.horario}</td>
-              <td>${c.compromisso}</td>
-              <td><input type="checkbox" ${checked} onchange="atualizar(${c.id}, this.checked)"></td>
-            </tr>`;
-          });
-          html += "</table>";
-          div.innerHTML = html;
-        })
-        .catch(err => console.error("Erro ao carregar:", err));
+          return res.json();
+
+        }
+      )
+      .then(
+        function(dados) {
+
+          if (
+            !Array.isArray(dados)
+          ) {
+
+            dados = [];
+
+          }
+
+          compromissos =
+            dados;
+
+          renderizar();
+
+        }
+      )
+      .catch(
+        function(erro) {
+
+          console.error(
+            "Erro ao carregar:",
+            erro
+          );
+
+          relatorio.innerHTML = `
+
+            <div class="empty">
+
+              <div class="empty-icon">
+                ⚠️
+              </div>
+
+              <h3>
+                Não foi possível carregar
+              </h3>
+
+              <p>
+                Verifique a conexão com a API.
+              </p>
+
+            </div>
+
+          `;
+
+        }
+      );
+
     }
 
-    // Atualizar status quando marcar checkbox
-    function atualizar(id, marcado) {
+
+    /* =====================================================
+       RENDERIZAR
+    ====================================================== */
+
+    function renderizar() {
+
+      const dataFiltro =
+        dataSelecionada ||
+        hojeISO();
+
+
+      let lista =
+        compromissos.filter(
+          function(item) {
+
+            return normalizarData(
+              item.data
+            ) === dataFiltro;
+
+          }
+        );
+
+
+      /* Ordena por horário */
+
+      lista.sort(
+        function(a, b) {
+
+          return converterMinutos(
+            a.horario
+          ) -
+          converterMinutos(
+            b.horario
+          );
+
+        }
+      );
+
+
+      atualizarEstatisticas(
+        lista
+      );
+
+
+      if (
+        lista.length === 0
+      ) {
+
+        relatorio.innerHTML = `
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              📭
+            </div>
+
+            <h3>
+              Nenhum compromisso
+            </h3>
+
+            <p>
+              Não existem compromissos
+              para ${formatarData(dataFiltro)}.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const agora =
+        new Date();
+
+
+      const hoje =
+        hojeISO();
+
+
+      let html = "";
+
+
+      lista.forEach(
+        function(c) {
+
+          const data =
+            normalizarData(
+              c.data
+            );
+
+          const horario =
+            formatarHorario(
+              c.horario
+            );
+
+          const minutos =
+            converterMinutos(
+              horario
+            );
+
+
+          const minutosAgora =
+            agora.getHours() * 60 +
+            agora.getMinutes();
+
+
+          const isHoje =
+            data === hoje;
+
+
+          const isAgora =
+            isHoje &&
+            minutos <= minutosAgora &&
+            minutos + 60 >= minutosAgora;
+
+
+          const concluido =
+            String(
+              c.baixado || ""
+            ).toLowerCase() ===
+            "sim";
+
+
+          let badge = "";
+
+          if (concluido) {
+
+            badge = `
+
+              <span class="badge badge-done">
+                ✓ Concluído
+              </span>
+
+            `;
+
+          } else if (isAgora) {
+
+            badge = `
+
+              <span class="badge badge-now">
+                ● Agora
+              </span>
+
+            `;
+
+          } else {
+
+            badge = `
+
+              <span class="badge badge-pending">
+                Pendente
+              </span>
+
+            `;
+
+          }
+
+
+          html += `
+
+            <article
+              class="
+                appointment
+                ${isAgora ? "now" : ""}
+                ${concluido ? "done" : ""}
+              "
+            >
+
+              <div class="appointment-top">
+
+                <div class="time">
+
+                  <span class="time-icon">
+                    🕐
+                  </span>
+
+                  ${escapeHtml(horario)}
+
+                </div>
+
+                ${badge}
+
+              </div>
+
+
+              <h3 class="appointment-title">
+
+                ${escapeHtml(
+                  c.compromisso
+                )}
+
+              </h3>
+
+
+              <div class="appointment-date">
+
+                📅 ${escapeHtml(
+                  formatarData(data)
+                )}
+
+              </div>
+
+
+              <div class="appointment-footer">
+
+                <label
+                  class="check-container"
+                >
+
+                  <input
+                    type="checkbox"
+                    ${concluido ? "checked" : ""}
+                    onchange="
+                      atualizar(
+                        '${escapeJs(c.id)}',
+                        this.checked
+                      )
+                    "
+                  >
+
+                  <span>
+                    ${concluido
+                      ? "Baixado"
+                      : "Marcar como concluído"}
+                  </span>
+
+                </label>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      );
+
+
+      relatorio.innerHTML =
+        html;
+
+    }
+
+
+    /* =====================================================
+       ESTATÍSTICAS
+    ====================================================== */
+
+    function atualizarEstatisticas(
+      lista
+    ) {
+
+      const concluidos =
+        lista.filter(
+          function(item) {
+
+            return String(
+              item.baixado || ""
+            ).toLowerCase() ===
+            "sim";
+
+          }
+        ).length;
+
+
+      const pendentes =
+        lista.length -
+        concluidos;
+
+
+      document
+        .getElementById(
+          "totalHoje"
+        )
+        .textContent =
+        lista.length;
+
+
+      document
+        .getElementById(
+          "totalPendentes"
+        )
+        .textContent =
+        pendentes;
+
+
+      document
+        .getElementById(
+          "totalConcluidos"
+        )
+        .textContent =
+        concluidos;
+
+
+      document
+        .getElementById(
+          "totalGeral"
+        )
+        .textContent =
+        compromissos.length;
+
+    }
+
+
+    /* =====================================================
+       ATUALIZAR STATUS
+    ====================================================== */
+
+    function atualizar(
+      id,
+      marcado
+    ) {
+
       const dados = {
-        acao: "atualizar",
-        id: id,
-        baixado: marcado ? "Sim" : "Não"
+
+        acao:
+          "atualizar",
+
+        id:
+          id,
+
+        baixado:
+          marcado
+            ? "Sim"
+            : "Não"
+
       };
 
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(dados)
-      })
-      .then(res => res.json())
-      .then(() => console.log("✅ Status atualizado"))
-      .catch(err => console.error("Erro:", err));
+
+      fetch(
+        API_URL,
+        {
+
+          method: "POST",
+
+          body:
+            JSON.stringify(
+              dados
+            )
+
+        }
+      )
+      .then(
+        function(res) {
+
+          if (!res.ok) {
+
+            throw new Error(
+              "Erro HTTP " +
+              res.status
+            );
+
+          }
+
+          return res.json();
+
+        }
+      )
+      .then(
+        function() {
+
+          mostrarToast(
+            marcado
+              ? "✅ Compromisso concluído."
+              : "Compromisso reaberto."
+          );
+
+          carregar();
+
+        }
+      )
+      .catch(
+        function(erro) {
+
+          console.error(
+            "Erro ao atualizar:",
+            erro
+          );
+
+          mostrarToast(
+            "Erro ao atualizar o compromisso.",
+            "error"
+          );
+
+          carregar();
+
+        }
+      );
+
     }
 
-    // Carregar ao abrir
+
+    /* =====================================================
+       FILTRAR DATA
+    ====================================================== */
+
+    function filtrarData() {
+
+      const data =
+        document
+          .getElementById(
+            "filtroData"
+          )
+          .value;
+
+
+      if (!data) {
+
+        mostrarToast(
+          "Selecione uma data.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      dataSelecionada =
+        data;
+
+      renderizar();
+
+    }
+
+
+    /* =====================================================
+       MOSTRAR HOJE
+    ====================================================== */
+
+    function mostrarHoje() {
+
+      const hoje =
+        hojeISO();
+
+
+      dataSelecionada =
+        hoje;
+
+
+      document
+        .getElementById(
+          "filtroData"
+        )
+        .value =
+        hoje;
+
+
+      renderizar();
+
+    }
+
+
+    /* =====================================================
+       NORMALIZAR DATA
+    ====================================================== */
+
+    function normalizarData(
+      valor
+    ) {
+
+      if (!valor) {
+        return "";
+      }
+
+
+      let texto =
+        String(valor)
+          .trim();
+
+
+      /*
+       * yyyy-MM-dd
+       */
+
+      let match =
+        texto.match(
+          /^(\d{4})-(\d{1,2})-(\d{1,2})/
+        );
+
+
+      if (match) {
+
+        return (
+          match[1] +
+          "-" +
+          String(
+            match[2]
+          ).padStart(2, "0") +
+          "-" +
+          String(
+            match[3]
+          ).padStart(2, "0")
+        );
+
+      }
+
+
+      /*
+       * dd/MM/yyyy
+       */
+
+      match =
+        texto.match(
+          /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
+        );
+
+
+      if (match) {
+
+        return (
+          match[3] +
+          "-" +
+          String(
+            match[2]
+          ).padStart(2, "0") +
+          "-" +
+          String(
+            match[1]
+          ).padStart(2, "0")
+        );
+
+      }
+
+
+      /*
+       * Date string
+       */
+
+      const date =
+        new Date(valor);
+
+
+      if (
+        !isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return (
+          date.getFullYear() +
+          "-" +
+          String(
+            date.getMonth() + 1
+          ).padStart(2, "0") +
+          "-" +
+          String(
+            date.getDate()
+          ).padStart(2, "0")
+        );
+
+      }
+
+
+      return "";
+
+    }
+
+
+    /* =====================================================
+       HORÁRIO
+    ====================================================== */
+
+    function formatarHorario(
+      valor
+    ) {
+
+      if (!valor) {
+        return "";
+      }
+
+
+      const texto =
+        String(valor)
+          .trim();
+
+
+      const match =
+        texto.match(
+          /(\d{1,2}):(\d{2})/
+        );
+
+
+      if (!match) {
+
+        return texto;
+
+      }
+
+
+      return (
+        String(
+          match[1]
+        ).padStart(2, "0") +
+        ":" +
+        match[2]
+      );
+
+    }
+
+
+    /* =====================================================
+       HORA PARA MINUTOS
+    ====================================================== */
+
+    function converterMinutos(
+      horario
+    ) {
+
+      const texto =
+        formatarHorario(
+          horario
+        );
+
+
+      const partes =
+        texto.split(":");
+
+
+      if (
+        partes.length < 2
+      ) {
+
+        return 999999;
+
+      }
+
+
+      return (
+        Number(partes[0]) * 60 +
+        Number(partes[1])
+      );
+
+    }
+
+
+    /* =====================================================
+       ESCAPE JAVASCRIPT
+    ====================================================== */
+
+    function escapeJs(
+      valor
+    ) {
+
+      return String(
+        valor ?? ""
+      )
+      .replace(
+        /\\/g,
+        "\\\\"
+      )
+      .replace(
+        /'/g,
+        "\\'"
+      )
+      .replace(
+        /"/g,
+        '\\"'
+      )
+      .replace(
+        /\n/g,
+        "\\n"
+      )
+      .replace(
+        /\r/g,
+        "\\r"
+      );
+
+    }
+
+
+    /* =====================================================
+       INICIALIZAÇÃO
+    ====================================================== */
+
+    configurarDataHoje();
+
     carregar();
+
+
+    /*
+     * Atualiza a agenda automaticamente
+     * a cada 60 segundos.
+     */
+
+    setInterval(
+      function() {
+
+        /*
+         * Se mudou o dia,
+         * muda automaticamente para hoje.
+         */
+
+        const hoje =
+          hojeISO();
+
+
+        if (
+          dataSelecionada !==
+          hoje
+        ) {
+
+          dataSelecionada =
+            hoje;
+
+          document
+            .getElementById(
+              "filtroData"
+            )
+            .value =
+            hoje;
+
+        }
+
+
+        carregar();
+
+      },
+      60000
+    );
+
   </script>
+
 </body>
 </html>
