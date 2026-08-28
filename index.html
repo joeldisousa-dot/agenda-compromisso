@@ -1,853 +1,2565 @@
-:root {
-  --primary: #315bea;
-  --primary-dark: #2448c7;
-  --primary-light: #eef2ff;
 
-  --success: #159570;
-  --success-light: #ecfdf5;
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-  --warning: #d88919;
-  --warning-light: #fff8e7;
+<head>
 
-  --danger: #d94b61;
-  --danger-light: #fff1f3;
+<meta charset="UTF-8">
 
-  --dark: #172033;
-  --text: #455269;
-  --muted: #78859a;
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-  --background: #f5f7fb;
-  --card: #ffffff;
-  --border: #e7ebf2;
+<title>Conferência eConsignado na Rescisão</title>
 
-  --radius: 18px;
+<style>
 
-  --shadow:
-    0 12px 35px rgba(31, 44, 76, .07);
-
-  --shadow-hover:
-    0 18px 42px rgba(31, 44, 76, .13);
+*{
+    box-sizing:border-box;
 }
 
-* {
-  box-sizing: border-box;
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+    color:#1f2937;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-
-  font-family:
-    Inter,
-    ui-sans-serif,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
-
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(49, 91, 234, .07),
-      transparent 32rem
-    ),
-    var(--background);
-
-  color: var(--text);
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
 }
 
-/* HEADER */
-
-.header {
-  position: relative;
-  overflow: hidden;
-
-  background:
-    linear-gradient(
-      125deg,
-      #172033 0%,
-      #243a78 52%,
-      #315bea 100%
-    );
-
-  color: #fff;
-  padding: 32px 24px;
-
-  box-shadow:
-    0 8px 25px rgba(23, 32, 51, .18);
+.header{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:25px;
+    margin-bottom:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.05);
 }
 
-.header::after {
-  content: "";
-
-  position: absolute;
-  width: 300px;
-  height: 300px;
-
-  right: -90px;
-  top: -160px;
-
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, .08);
+.header h1{
+    margin:0 0 8px;
+    color:#123b68;
+    font-size:25px;
 }
 
-.header-content {
-  position: relative;
-  z-index: 1;
-
-  max-width: 1400px;
-  margin: auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+.header p{
+    margin:0;
+    color:#64748b;
+    line-height:1.6;
+    font-size:14px;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.badge{
+    display:inline-block;
+    margin-top:14px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
 }
 
-.brand-icon {
-  width: 58px;
-  height: 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid rgba(255, 255, 255, .2);
-  border-radius: 17px;
-
-  background: rgba(255, 255, 255, .13);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.15),
-    0 8px 20px rgba(0,0,0,.12);
-
-  font-size: 28px;
+.card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:22px;
+    margin-bottom:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.04);
 }
 
-.brand h1 {
-  margin: 0;
-
-  font-size: 26px;
-  font-weight: 750;
-  letter-spacing: -.025em;
+.card-title{
+    color:#123b68;
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:18px;
 }
 
-.brand p {
-  margin: 6px 0 0;
-
-  color: rgba(255,255,255,.72);
-  font-size: 14px;
+.info{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1e40af;
+    padding:14px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.6;
 }
 
-.today-info {
-  position: relative;
-  z-index: 1;
-
-  min-width: 155px;
-  padding: 12px 16px;
-
-  text-align: right;
-
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 13px;
-
-  background: rgba(255,255,255,.09);
-  backdrop-filter: blur(10px);
+.warning{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    color:#92400e;
+    padding:14px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.6;
 }
 
-.today-info .label {
-  display: block;
-
-  margin-bottom: 4px;
-
-  color: rgba(255,255,255,.62);
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
 }
 
-.today-info .date {
-  font-size: 18px;
-  font-weight: 700;
+.field{
+    display:flex;
+    flex-direction:column;
 }
 
-/* CONTAINER */
-
-.container {
-  width: 100%;
-  max-width: 1400px;
-
-  margin: 0 auto;
-  padding: 30px 24px 54px;
+.field.full{
+    grid-column:1 / -1;
 }
 
-/* INDICADORES */
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-
-  margin-bottom: 26px;
-}
-
-.stat-card {
-  position: relative;
-  overflow: hidden;
-
-  min-height: 106px;
-
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-
-  padding: 20px;
-
-  box-shadow: var(--shadow);
-
-  display: flex;
-  align-items: center;
-  gap: 15px;
-
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease;
-}
-
-.stat-card::after {
-  content: "";
-
-  position: absolute;
-  width: 90px;
-  height: 90px;
-
-  right: -35px;
-  bottom: -45px;
-
-  border-radius: 50%;
-  background: rgba(49, 91, 234, .045);
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
-}
-
-.stat-icon {
-  width: 51px;
-  height: 51px;
-
-  flex-shrink: 0;
-
-  border-radius: 15px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 22px;
-}
-
-.stat-icon.blue {
-  color: var(--primary);
-  background: var(--primary-light);
-}
-
-.stat-icon.green {
-  color: var(--success);
-  background: var(--success-light);
-}
-
-.stat-icon.orange {
-  color: var(--warning);
-  background: var(--warning-light);
-}
-
-.stat-icon.red {
-  color: var(--danger);
-  background: var(--danger-light);
-}
-
-.stat-title {
-  margin-bottom: 5px;
-
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.stat-value {
-  color: var(--dark);
-  font-size: 27px;
-  font-weight: 800;
-  letter-spacing: -.04em;
-}
-
-/* ESTRUTURA */
-
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 390px;
-  gap: 24px;
-  align-items: start;
-}
-
-.card {
-  overflow: hidden;
-
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-
-  box-shadow: var(--shadow);
-}
-
-/* CABEÇALHOS DOS CARDS */
-
-.card-header {
-  padding: 22px 24px;
-
-  border-bottom: 1px solid var(--border);
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-}
-
-.card-title {
-  margin: 0;
-
-  color: var(--dark);
-  font-size: 18px;
-  font-weight: 750;
-  letter-spacing: -.015em;
-}
-
-.card-subtitle {
-  margin: 5px 0 0;
-
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* FILTROS */
-
-.filters {
-  padding: 17px 24px;
-
-  background: #fbfcfe;
-  border-bottom: 1px solid var(--border);
-
-  display: flex;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 11px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-
-  flex: 1;
-  min-width: 160px;
-}
-
-.field label {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: .02em;
-  text-transform: uppercase;
+label{
+    font-size:13px;
+    font-weight:bold;
+    color:#374151;
+    margin-bottom:7px;
 }
 
 input,
-select {
-  width: 100%;
-  height: 45px;
-
-  border: 1px solid #dfe4ec;
-  border-radius: 11px;
-
-  padding: 0 14px;
-
-  outline: none;
-  background: #fff;
-  color: var(--dark);
-
-  font: inherit;
-  font-size: 14px;
-
-  transition:
-    border-color .2s ease,
-    box-shadow .2s ease,
-    background .2s ease;
-}
-
-input:hover,
-select:hover {
-  border-color: #c5cfdf;
+select{
+    width:100%;
+    height:43px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    padding:0 12px;
+    font-size:14px;
+    outline:none;
+    background:#fff;
 }
 
 input:focus,
-select:focus {
-  border-color: var(--primary);
-  background: #fff;
-
-  box-shadow:
-    0 0 0 4px rgba(49, 91, 234, .11);
+select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.10);
 }
 
-/* BOTÕES */
-
-button {
-  height: 45px;
-
-  border: 0;
-  border-radius: 11px;
-
-  padding: 0 17px;
-
-  font: inherit;
-  font-size: 13px;
-  font-weight: 750;
-
-  cursor: pointer;
-
-  transition:
-    transform .18s ease,
-    background .2s ease,
-    box-shadow .2s ease,
-    opacity .2s ease;
+.help{
+    margin-top:7px;
+    color:#64748b;
+    font-size:11px;
+    line-height:1.55;
 }
 
-button:hover {
-  transform: translateY(-2px);
+.nature{
+    margin-top:7px;
+    padding:8px 10px;
+    background:#f8fafc;
+    border-left:3px solid #94a3b8;
+    border-radius:5px;
+    color:#475569;
+    font-size:11px;
+    line-height:1.5;
 }
 
-button:active {
-  transform: translateY(0);
+.nature strong{
+    color:#123b68;
 }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-  transform: none;
+.status{
+    margin-top:7px;
+    font-size:11px;
+    font-weight:bold;
 }
 
-.btn-primary {
-  color: #fff;
-  background: var(--primary);
-
-  box-shadow:
-    0 7px 17px rgba(49, 91, 234, .24);
+.status.somar{
+    color:#166534;
 }
 
-.btn-primary:hover {
-  background: var(--primary-dark);
-  box-shadow:
-    0 9px 22px rgba(49, 91, 234, .3);
+.status.descontar{
+    color:#9a3412;
 }
 
-.btn-secondary {
-  color: var(--text);
-  background: #f1f4f8;
-  border: 1px solid #e5e9f0;
+.status.nao{
+    color:#64748b;
 }
 
-.btn-secondary:hover {
-  background: #e7ebf2;
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
 }
 
-.btn-full {
-  width: 100%;
+button{
+    height:43px;
+    border:0;
+    border-radius:8px;
+    padding:0 18px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-/* COMPROMISSOS */
-
-.appointments {
-  padding: 24px;
-
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
-  gap: 16px;
+.btn-primary{
+    background:#1769e0;
+    color:#fff;
 }
 
-.appointment {
-  position: relative;
-
-  overflow: hidden;
-
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 15px;
-
-  padding: 18px;
-
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    border-color .2s ease;
+.btn-primary:hover{
+    background:#1257bd;
 }
 
-.appointment::before {
-  content: "";
-
-  position: absolute;
-  inset: 0 auto 0 0;
-
-  width: 4px;
-
-  background: #dbe2ef;
+.btn-secondary{
+    background:#eef2f7;
+    color:#374151;
 }
 
-.appointment:hover {
-  transform: translateY(-3px);
-
-  border-color: #c9d6f8;
-  box-shadow: var(--shadow-hover);
+.btn-success{
+    background:#15803d;
+    color:#fff;
 }
 
-.appointment.now {
-  border: 2px solid var(--primary);
-  background: linear-gradient(135deg, #f0f4ff, #fff);
+.results{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
 }
 
-.appointment.now::before {
-  background: var(--primary);
+.result{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:16px;
 }
 
-.appointment.done {
-  opacity: .62;
+.result-title{
+    color:#64748b;
+    font-size:11px;
+    margin-bottom:7px;
 }
 
-.appointment-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+.result-value{
+    color:#123b68;
+    font-size:21px;
+    font-weight:bold;
 }
 
-.time {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-
-  color: var(--dark);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -.04em;
+.result.somar{
+    background:#f0fdf4;
+    border-color:#bbf7d0;
 }
 
-.time-icon {
-  color: var(--primary);
-  font-size: 17px;
+.result.desconto{
+    background:#fff7ed;
+    border-color:#fed7aa;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-
-  padding: 6px 10px;
-  border-radius: 30px;
-
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .04em;
-  text-transform: uppercase;
+.result.final{
+    background:#eff6ff;
+    border-color:#bfdbfe;
 }
 
-.badge-now {
-  color: #254bc4;
-  background: #dfe7ff;
+.result.consignado{
+    background:#fef2f2;
+    border-color:#fecaca;
 }
 
-.badge-done {
-  color: #087653;
-  background: #d9f8ec;
+.memory{
+    margin-top:18px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:18px;
 }
 
-.badge-pending {
-  color: #a76708;
-  background: #fff0c9;
+.memory h3{
+    margin:0 0 12px;
+    color:#123b68;
+    font-size:16px;
 }
 
-.appointment-title {
-  min-height: 45px;
-  margin: 0 0 13px;
-
-  color: var(--dark);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.42;
+.memory-row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:9px 0;
+    border-bottom:1px solid #e5e7eb;
+    font-size:13px;
 }
 
-.appointment-date {
-  margin-bottom: 16px;
-
-  color: var(--muted);
-  font-size: 12px;
+.memory-row:last-child{
+    border-bottom:0;
+    font-weight:bold;
 }
 
-.appointment-footer {
-  padding-top: 14px;
-
-  border-top: 1px solid var(--border);
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+.highlight{
+    margin-top:12px;
+    padding:14px;
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    border-radius:9px;
+    font-size:14px;
 }
 
-.check-container {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-
-  cursor: pointer;
+.table-wrap{
+    overflow-x:auto;
 }
 
-.check-container input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-
-  accent-color: var(--success);
-  cursor: pointer;
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
 }
 
-/* FORMULÁRIO */
-
-.form {
-  padding: 24px;
+th{
+    background:#f1f5f9;
+    color:#334155;
+    text-align:left;
+    padding:11px;
+    font-size:12px;
 }
 
-.form-group {
-  margin-bottom: 18px;
+td{
+    padding:10px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:12px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 750;
+.tag{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:12px;
+    font-size:10px;
+    font-weight:bold;
 }
 
-.form-actions {
-  margin-top: 25px;
+.tag.somar{
+    background:#dcfce7;
+    color:#166534;
 }
 
-/* ESTADOS */
-
-.empty {
-  grid-column: 1 / -1;
-  padding: 66px 20px;
-
-  text-align: center;
-  color: var(--muted);
+.tag.desconto{
+    background:#ffedd5;
+    color:#9a3412;
 }
 
-.empty-icon {
-  margin-bottom: 12px;
-  font-size: 46px;
-  filter: grayscale(.15);
+.tag.nao{
+    background:#e2e8f0;
+    color:#475569;
 }
 
-.empty h3 {
-  margin: 0 0 7px;
-  color: var(--dark);
-  font-size: 17px;
+.alert{
+    display:none;
+    padding:13px;
+    border-radius:9px;
+    margin-top:16px;
+    font-size:13px;
 }
 
-.empty p {
-  margin: 0;
-  font-size: 13px;
+.alert.success{
+    display:block;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    color:#166534;
 }
 
-.loading {
-  grid-column: 1 / -1;
-  padding: 55px;
-
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
+.alert.warning{
+    display:block;
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    color:#92400e;
 }
 
-.spinner {
-  width: 36px;
-  height: 36px;
+@media(max-width:850px){
 
-  margin: 0 auto 14px;
+    .results{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-  border: 3px solid #e6eaf1;
-  border-top-color: var(--primary);
-  border-radius: 50%;
-
-  animation: spin .8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@media(max-width:650px){
+
+    .container{
+        padding:10px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .results{
+        grid-template-columns:1fr;
+    }
+
+    .actions button{
+        width:100%;
+    }
+
+    .header h1{
+        font-size:21px;
+    }
+
 }
 
-/* TOAST */
+@media print{
 
-.toast {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 9999;
+    body{
+        background:#fff;
+    }
 
-  min-width: 290px;
-  max-width: 410px;
+    .container{
+        max-width:100%;
+        padding:0;
+    }
 
-  padding: 15px 18px;
+    .header,
+    .card{
+        box-shadow:none;
+    }
 
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 13px;
+    .actions{
+        display:none;
+    }
 
-  background: #172033;
-  color: #fff;
-
-  box-shadow: 0 18px 40px rgba(0,0,0,.2);
-
-  font-size: 13px;
-  font-weight: 600;
-
-  transform: translateY(130px);
-  opacity: 0;
-  pointer-events: none;
-
-  transition:
-    transform .3s ease,
-    opacity .3s ease;
 }
 
-.toast.show {
-  transform: translateY(0);
-  opacity: 1;
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<!-- =====================================================
+     CABEÇALHO
+===================================================== -->
+
+<div class="header">
+
+<h1>
+🧮 Conferência do eConsignado na Rescisão
+</h1>
+
+<p>
+
+Apure a <strong>remuneração disponível na rescisão</strong>
+e confira o limite do desconto do Crédito do Trabalhador
+com base nas rubricas informadas na folha.
+
+</p>
+
+<span class="badge">
+REGRA DO ITEM 5.7.3 — MANUAL DO CRÉDITO DO TRABALHADOR
+</span>
+
+</div>
+
+
+<!-- =====================================================
+     ORIENTAÇÃO
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+📌 Como utilizar
+</div>
+
+<div class="info">
+
+<strong>1.</strong>
+Informe cada rubrica separadamente.
+
+<br>
+
+<strong>2.</strong>
+Confira no cadastro da folha/eSocial a
+<strong>natureza da rubrica</strong> e os códigos de incidência.
+
+<br>
+
+<strong>3.</strong>
+Para rubricas com incidência previdenciária,
+confira o <strong>codIncCP</strong>.
+
+<br>
+
+<strong>4.</strong>
+Para descontos de IRRF, confira o
+<strong>codIncIRRF</strong>.
+
+<br>
+
+<strong>5.</strong>
+O sistema classificará as rubricas em:
+<strong>SOMAR</strong>,
+<strong>DEDUZIR</strong> ou
+<strong>NÃO CONSIDERAR</strong>.
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     DADOS DO CONSIGNADO
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+🏦 Dados do eConsignado
+</div>
+
+<div class="grid">
+
+<div class="field">
+
+<label>
+Saldo devedor informado pela instituição financeira
+</label>
+
+<input
+    type="text"
+    id="saldoDevedor"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="help">
+
+Informe o saldo devedor atualizado apresentado
+no Portal Emprega Brasil.
+
+</div>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Percentual das verbas rescisórias dado em garantia
+</label>
+
+<input
+    type="number"
+    id="percentualGarantia"
+    min="0"
+    max="100"
+    step="0.01"
+    placeholder="Ex.: 25"
+>
+
+<div class="help">
+
+Informe o percentual de garantia apresentado
+no contrato/Portal Emprega Brasil.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     VENCIMENTOS
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+➕ Verbas de vencimento
+</div>
+
+<div class="grid">
+
+
+<!-- SALDO SALÁRIO -->
+
+<div class="field">
+
+<label>
+Saldo de salário
+</label>
+
+<input
+    type="text"
+    id="saldoSalario"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza de referência:</strong>
+1000 — Saldo de salário
+
+<br>
+
+<strong>Incidência:</strong>
+verificar codIncCP = 11 ou 12
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR quando enquadrado na regra previdenciária.
+
+</div>
+
+</div>
+
+
+<!-- HORA EXTRA -->
+
+<div class="field">
+
+<label>
+Horas extras
+</label>
+
+<input
+    type="text"
+    id="horasExtras"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza de referência:</strong>
+1003 — Horas extras
+
+<br>
+
+<strong>Incidência:</strong>
+verificar codIncCP = 11 ou 12
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR quando houver incidência previdenciária.
+
+</div>
+
+</div>
+
+
+<!-- ANUÊNIO -->
+
+<div class="field">
+
+<label>
+Anuênio / adicional por tempo de serviço
+</label>
+
+<input
+    type="text"
+    id="anuenio"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+adicional salarial/remuneratório.
+
+<br>
+
+<strong>Incidência:</strong>
+confira o codIncCP da rubrica no eSocial.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR se a rubrica tiver incidência previdenciária
+(codIncCP 11 ou 12).
+
+</div>
+
+</div>
+
+
+<!-- ADICIONAL NOTURNO -->
+
+<div class="field">
+
+<label>
+Adicional noturno
+</label>
+
+<input
+    type="text"
+    id="adicionalNoturno"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+adicional salarial.
+
+<br>
+
+<strong>Incidência:</strong>
+conferir codIncCP.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR se codIncCP = 11 ou 12.
+
+</div>
+
+</div>
+
+
+<!-- INSALUBRIDADE -->
+
+<div class="field">
+
+<label>
+Adicional de insalubridade
+</label>
+
+<input
+    type="text"
+    id="insalubridade"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+adicional salarial.
+
+<br>
+
+<strong>Incidência:</strong>
+conferir codIncCP.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR se houver incidência previdenciária.
+
+</div>
+
+</div>
+
+
+<!-- PERICULOSIDADE -->
+
+<div class="field">
+
+<label>
+Adicional de periculosidade
+</label>
+
+<input
+    type="text"
+    id="periculosidade"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+adicional salarial.
+
+<br>
+
+<strong>Incidência:</strong>
+conferir codIncCP.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR se houver incidência previdenciária.
+
+</div>
+
+</div>
+
+
+<!-- DSR -->
+
+<div class="field">
+
+<label>
+DSR / reflexos
+</label>
+
+<input
+    type="text"
+    id="dsr"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+verba remuneratória.
+
+<br>
+
+<strong>Incidência:</strong>
+conferir codIncCP.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR quando a rubrica possuir incidência previdenciária.
+
+</div>
+
+</div>
+
+
+<!-- OUTRAS SALARIAIS -->
+
+<div class="field">
+
+<label>
+Outras verbas salariais com incidência previdenciária
+</label>
+
+<input
+    type="text"
+    id="outrasSalariais"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+verba remuneratória.
+
+<br>
+
+<strong>Incidência:</strong>
+informar/verificar codIncCP.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR somente se codIncCP = 11 ou 12.
+
+</div>
+
+</div>
+
+
+<!-- AVISO -->
+
+<div class="field">
+
+<label>
+Aviso-prévio indenizado
+</label>
+
+<input
+    type="text"
+    id="avisoPrevio"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6003 — Aviso prévio indenizado.
+
+<br>
+
+<strong>Incidência:</strong>
+sem incidência previdenciária.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR na rescisão por previsão específica
+do §5º do art. 30.
+
+</div>
+
+</div>
+
+
+<!-- FÉRIAS PROPORCIONAIS -->
+
+<div class="field">
+
+<label>
+Férias proporcionais
+</label>
+
+<input
+    type="text"
+    id="feriasProporcionais"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6006 — Férias proporcionais.
+
+<br>
+
+<strong>Incidência:</strong>
+sem incidência previdenciária.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR na remuneração disponível da rescisão.
+
+</div>
+
+</div>
+
+
+<!-- FÉRIAS VENCIDAS -->
+
+<div class="field">
+
+<label>
+Férias vencidas
+</label>
+
+<input
+    type="text"
+    id="feriasVencidas"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6007 — Férias vencidas.
+
+<br>
+
+<strong>Incidência:</strong>
+sem incidência previdenciária.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR na rescisão.
+
+</div>
+
+</div>
+
+
+<!-- FÉRIAS DOBRADAS -->
+
+<div class="field">
+
+<label>
+Férias em dobro indenizadas
+</label>
+
+<input
+    type="text"
+    id="feriasDobro"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6004 — Férias em dobro indenizadas na rescisão.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR na remuneração disponível.
+
+</div>
+
+</div>
+
+
+<!-- 1/3 -->
+
+<div class="field">
+
+<label>
+1/3 constitucional sobre férias
+</label>
+
+<input
+    type="text"
+    id="tercoFerias"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza de referência:</strong>
+1017 — Terço de férias vencidas/proporcionais.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR na rescisão conforme regra específica.
+
+</div>
+
+</div>
+
+
+<!-- OUTRAS FÉRIAS INDENIZADAS -->
+
+<div class="field">
+
+<label>
+Outras férias indenizadas
+</label>
+
+<input
+    type="text"
+    id="outrasFerias"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+férias indenizadas.
+
+<br>
+
+<strong>Tratamento:</strong>
+SOMAR quando enquadrada na hipótese prevista
+na regra da rescisão.
+
+</div>
+
+</div>
+
+
+<!-- 13 -->
+
+<div class="field">
+
+<label>
+13º salário
+</label>
+
+<input
+    type="text"
+    id="decimoTerceiro"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+13º salário.
+
+<br>
+
+<strong>Tratamento:</strong>
+campo separado para conferência.
+
+<br>
+
+<strong>Observação:</strong>
+não misturar automaticamente com as demais
+rubricas da remuneração disponível.
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     DESCONTOS
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+➖ Descontos a verificar
+</div>
+
+<div class="grid">
+
+
+<!-- INSS -->
+
+<div class="field">
+
+<label>
+INSS sobre remuneração
+</label>
+
+<input
+    type="text"
+    id="inss"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza de referência:</strong>
+9201 — Desconto de contribuição previdenciária.
+
+<br>
+
+<strong>Incidência:</strong>
+codIncCP = 31, 32, 34 ou 35.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- INSS 13 -->
+
+<div class="field">
+
+<label>
+INSS sobre 13º salário
+</label>
+
+<input
+    type="text"
+    id="inss13"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+desconto previdenciário do 13º.
+
+<br>
+
+<strong>Tratamento:</strong>
+informar separadamente para conferência.
+
+</div>
+
+</div>
+
+
+<!-- IRRF -->
+
+<div class="field">
+
+<label>
+IRRF sobre remuneração
+</label>
+
+<input
+    type="text"
+    id="irrf"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza de referência:</strong>
+9203 — Desconto de imposto de renda retido.
+
+<br>
+
+<strong>Incidência:</strong>
+codIncIRRF = 31 ou 32.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- IRRF 13 -->
+
+<div class="field">
+
+<label>
+IRRF sobre 13º
+</label>
+
+<input
+    type="text"
+    id="irrf13"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+IRRF relativo ao 13º.
+
+<br>
+
+<strong>Tratamento:</strong>
+informar separadamente para conferência.
+
+</div>
+
+</div>
+
+
+<!-- PENSÃO -->
+
+<div class="field">
+
+<label>
+Pensão alimentícia
+</label>
+
+<input
+    type="text"
+    id="pensao"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+9213 — Pensão alimentícia.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- RETENÇÃO JUDICIAL -->
+
+<div class="field">
+
+<label>
+Retenção judicial
+</label>
+
+<input
+    type="text"
+    id="retencaoJudicial"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+9218 — Retenções judiciais.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- ADIANTAMENTO 13 -->
+
+<div class="field">
+
+<label>
+Desconto de adiantamento do 13º
+</label>
+
+<input
+    type="text"
+    id="adiantamento13"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+9214 — Desconto do adiantamento do 13º salário.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- FIES -->
+
+<div class="field">
+
+<label>
+FIES
+</label>
+
+<input
+    type="text"
+    id="fies"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+9260 — FIES - desconto.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- AVISO DESCONTO -->
+
+<div class="field">
+
+<label>
+Desconto de aviso-prévio
+</label>
+
+<input
+    type="text"
+    id="descontoAviso"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6901 — Desconto do aviso prévio.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- MULTA 480 -->
+
+<div class="field">
+
+<label>
+Multa do art. 480 da CLT
+</label>
+
+<input
+    type="text"
+    id="multa480"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+6904 — Multa prevista no art. 480 da CLT.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR.
+
+</div>
+
+</div>
+
+
+<!-- OUTROS COMPULSORIOS -->
+
+<div class="field">
+
+<label>
+Outros descontos compulsórios
+</label>
+
+<input
+    type="text"
+    id="outrosCompulsorios"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Natureza:</strong>
+verificar individualmente.
+
+<br>
+
+<strong>Tratamento:</strong>
+DEDUZIR somente quando houver previsão
+como desconto compulsório aplicável.
+
+</div>
+
+</div>
+
+
+<!-- DESCONTOS VOLUNTARIOS -->
+
+<div class="field">
+
+<label>
+Descontos voluntários
+</label>
+
+<input
+    type="text"
+    id="descontosVoluntarios"
+    placeholder="R$ 0,00"
+    oninput="formatarMoeda(this)"
+>
+
+<div class="nature">
+
+<strong>Exemplos:</strong>
+convênio, assistência, benefícios e outros
+descontos autorizados pelo empregado.
+
+<br>
+
+<strong>Tratamento:</strong>
+NÃO CONSIDERAR.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     RESULTADO
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+📊 Resultado da conferência
+</div>
+
+<div class="results">
+
+
+<div class="result somar">
+
+<div class="result-title">
+TOTAL DE VENCIMENTOS CONSIDERADOS
+</div>
+
+<div
+    class="result-value"
+    id="totalVencimentos"
+>
+R$ 0,00
+</div>
+
+</div>
+
+
+<div class="result desconto">
+
+<div class="result-title">
+TOTAL DE DESCONTOS CONSIDERADOS
+</div>
+
+<div
+    class="result-value"
+    id="totalDescontos"
+>
+R$ 0,00
+</div>
+
+</div>
+
+
+<div class="result final">
+
+<div class="result-title">
+REMUNERAÇÃO DISPONÍVEL
+</div>
+
+<div
+    class="result-value"
+    id="remuneracaoDisponivel"
+>
+R$ 0,00
+</div>
+
+</div>
+
+
+<div class="result consignado">
+
+<div class="result-title">
+DESCONTO MÁXIMO DO eCONSIGNADO
+</div>
+
+<div
+    class="result-value"
+    id="descontoConsignado"
+>
+R$ 0,00
+</div>
+
+</div>
+
+
+</div>
+
+
+<div class="memory">
+
+<h3>
+🧾 Memória de cálculo
+</h3>
+
+<div id="memoria">
+
+Informe os valores e clique em
+<strong>Calcular conferência</strong>.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     CLASSIFICAÇÃO
+===================================================== -->
+
+<div class="card">
+
+<div class="card-title">
+📌 Regra de classificação
+</div>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Classificação
+</th>
+
+<th>
+Regra
+</th>
+
+<th>
+Exemplos
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+<span class="tag somar">
+SOMAR
+</span>
+</td>
+
+<td>
+Vencimentos com incidência previdenciária e rubricas
+expressamente incluídas na rescisão.
+</td>
+
+<td>
+Saldo de salário, horas extras, aviso-prévio indenizado,
+férias proporcionais, férias vencidas etc.
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+<span class="tag desconto">
+DEDUZIR
+</span>
+</td>
+
+<td>
+Descontos previdenciários, IRRF e descontos compulsórios
+previstos na regra.
+</td>
+
+<td>
+INSS, IRRF, pensão, retenção judicial, FIES etc.
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+<span class="tag nao">
+NÃO CONSIDERAR
+</span>
+</td>
+
+<td>
+Verbas sem incidência previdenciária que não estejam
+expressamente incluídas e descontos voluntários.
+</td>
+
+<td>
+Prêmios sem incidência aplicável, convênio, benefícios
+e outros descontos voluntários.
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ALERTA
+===================================================== -->
+
+<div
+    id="alerta"
+    class="alert"
+>
+</div>
+
+
+<div class="actions">
+
+<button
+    class="btn-primary"
+    onclick="calcular()"
+>
+🧮 Calcular conferência
+</button>
+
+<button
+    class="btn-secondary"
+    onclick="carregarExemplo()"
+>
+📋 Carregar exemplo do Manual
+</button>
+
+<button
+    class="btn-secondary"
+    onclick="limpar()"
+>
+↺ Limpar
+</button>
+
+<button
+    class="btn-success"
+    onclick="window.print()"
+>
+🖨️ Imprimir
+</button>
+
+</div>
+
+
+<!-- =====================================================
+     OBSERVAÇÃO
+===================================================== -->
+
+<div class="card">
+
+<div class="warning">
+
+<strong>⚠️ Atenção:</strong>
+
+Esta ferramenta é destinada à conferência.
+
+A classificação final de uma rubrica deve ser confrontada
+com o cadastro da folha/eSocial, especialmente sua
+<strong>natureza</strong>, <strong>codIncCP</strong> e
+<strong>codIncIRRF</strong>.
+
+O eConsignado não deve ser calculado simplesmente
+sobre o valor bruto total da rescisão.
+
+Na rescisão, o manual estabelece que a remuneração
+disponível corresponde à diferença entre os vencimentos
+considerados e os descontos que devem ser deduzidos.
+
+</div>
+
+</div>
+
+
+<div style="
+text-align:center;
+color:#94a3b8;
+font-size:11px;
+padding:15px;
+">
+
+Conferência baseada no Manual de Orientação do Empregador
+— Crédito do Trabalhador — versão 2.1 — 26/06/2026.
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   FUNÇÕES DE FORMATAÇÃO
+===================================================== */
+
+function moeda(valor){
+
+    return Number(valor || 0).toLocaleString(
+        'pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    );
+
 }
 
-.toast.success {
-  background: #087653;
+
+function numero(valor){
+
+    if(!valor){
+        return 0;
+    }
+
+    let texto = String(valor)
+        .replace(/R\$/g,'')
+        .replace(/\s/g,'');
+
+    if(texto.includes(',')){
+
+        texto = texto
+            .replace(/\./g,'')
+            .replace(',','.');
+
+    }
+
+    const resultado = parseFloat(texto);
+
+    return isNaN(resultado)
+        ? 0
+        : resultado;
+
 }
 
-.toast.error {
-  background: #a52d43;
+
+function formatarMoeda(campo){
+
+    let valor = campo.value.replace(/\D/g,'');
+
+    if(!valor){
+
+        campo.value = '';
+
+        return;
+
+    }
+
+    valor = parseInt(valor,10) / 100;
+
+    campo.value = valor.toLocaleString(
+        'pt-BR',
+        {
+            style:'currency',
+            currency:'BRL'
+        }
+    );
+
 }
 
-/* RESPONSIVO */
 
-@media (max-width: 1050px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* =====================================================
+   PEGAR VALOR DE CAMPO
+===================================================== */
 
-  .layout {
-    grid-template-columns: 1fr;
-  }
+function valor(id){
+
+    const campo =
+        document.getElementById(id);
+
+    return campo
+        ? numero(campo.value)
+        : 0;
+
 }
 
-@media (max-width: 650px) {
-  .header {
-    padding: 24px 16px;
-  }
 
-  .header-content {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+/* =====================================================
+   CALCULAR
+===================================================== */
 
-  .today-info {
-    width: 100%;
-    text-align: left;
-  }
+function calcular(){
 
-  .container {
-    padding: 20px 14px 42px;
-  }
+    esconderAlerta();
 
-  .stats {
-    grid-template-columns: 1fr;
-    gap: 13px;
-  }
 
-  .card-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+    /* -----------------------------------------------
+       VENCIMENTOS PREVIDENCIÁRIOS
+    ----------------------------------------------- */
 
-  .filters {
-    padding: 16px;
-  }
+    const saldoSalario =
+        valor('saldoSalario');
 
-  .appointments {
-    padding: 16px;
-    grid-template-columns: 1fr;
-  }
+    const horasExtras =
+        valor('horasExtras');
 
-  .brand h1 {
-    font-size: 21px;
-  }
+    const anuenio =
+        valor('anuenio');
 
-  .brand p {
-    font-size: 13px;
-  }
+    const adicionalNoturno =
+        valor('adicionalNoturno');
 
-  .toast {
-    right: 14px;
-    bottom: 14px;
-    left: 14px;
-    min-width: auto;
-  }
+    const insalubridade =
+        valor('insalubridade');
+
+    const periculosidade =
+        valor('periculosidade');
+
+    const dsr =
+        valor('dsr');
+
+    const outrasSalariais =
+        valor('outrasSalariais');
+
+
+    /* -----------------------------------------------
+       VERBAS RESCISÓRIAS ESPECÍFICAS
+    ----------------------------------------------- */
+
+    const avisoPrevio =
+        valor('avisoPrevio');
+
+    const feriasProporcionais =
+        valor('feriasProporcionais');
+
+    const feriasVencidas =
+        valor('feriasVencidas');
+
+    const feriasDobro =
+        valor('feriasDobro');
+
+    const tercoFerias =
+        valor('tercoFerias');
+
+    const outrasFerias =
+        valor('outrasFerias');
+
+
+    /*
+     * 13º é exibido separadamente.
+     * Não é incluído automaticamente
+     * no total principal.
+     */
+
+    const decimoTerceiro =
+        valor('decimoTerceiro');
+
+
+    /* -----------------------------------------------
+       TOTAL DE VENCIMENTOS
+    ----------------------------------------------- */
+
+    const vencimentosPrevidenciarios =
+        saldoSalario +
+        horasExtras +
+        anuenio +
+        adicionalNoturno +
+        insalubridade +
+        periculosidade +
+        dsr +
+        outrasSalariais;
+
+
+    const vencimentosRescisorios =
+        avisoPrevio +
+        feriasProporcionais +
+        feriasVencidas +
+        feriasDobro +
+        tercoFerias +
+        outrasFerias;
+
+
+    const totalVencimentos =
+        vencimentosPrevidenciarios +
+        vencimentosRescisorios;
+
+
+    /* -----------------------------------------------
+       DESCONTOS
+    ----------------------------------------------- */
+
+    const inss =
+        valor('inss');
+
+    const inss13 =
+        valor('inss13');
+
+    const irrf =
+        valor('irrf');
+
+    const irrf13 =
+        valor('irrf13');
+
+    const pensao =
+        valor('pensao');
+
+    const retencaoJudicial =
+        valor('retencaoJudicial');
+
+    const adiantamento13 =
+        valor('adiantamento13');
+
+    const fies =
+        valor('fies');
+
+    const descontoAviso =
+        valor('descontoAviso');
+
+    const multa480 =
+        valor('multa480');
+
+    const outrosCompulsorios =
+        valor('outrosCompulsorios');
+
+
+    /*
+     * Descontos voluntários são
+     * deliberadamente excluídos.
+     */
+
+    const descontosVoluntarios =
+        valor('descontosVoluntarios');
+
+
+    const totalDescontos =
+        inss +
+        irrf +
+        pensao +
+        retencaoJudicial +
+        adiantamento13 +
+        fies +
+        descontoAviso +
+        multa480 +
+        outrosCompulsorios;
+
+
+    /* -----------------------------------------------
+       REMUNERAÇÃO DISPONÍVEL
+    ----------------------------------------------- */
+
+    const remuneracaoDisponivel =
+        Math.max(
+            0,
+            totalVencimentos -
+            totalDescontos
+        );
+
+
+    /* -----------------------------------------------
+       CONSIGNADO
+    ----------------------------------------------- */
+
+    const saldoDevedor =
+        valor('saldoDevedor');
+
+
+    let percentual =
+        parseFloat(
+            document.getElementById(
+                'percentualGarantia'
+            ).value
+        ) || 0;
+
+
+    percentual =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                percentual
+            )
+        );
+
+
+    const limitePercentual =
+        remuneracaoDisponivel *
+        (percentual / 100);
+
+
+    /*
+     * Regra do item 5.7.2:
+     *
+     * desconto = menor entre:
+     *
+     * 1) percentual aplicado sobre
+     *    remuneração disponível
+     *
+     * 2) saldo devedor
+     *
+     * Se não houver percentual,
+     * o desconto é zero.
+     */
+
+    let descontoConsignado = 0;
+
+
+    if(percentual > 0){
+
+        if(saldoDevedor > 0){
+
+            descontoConsignado =
+                Math.min(
+                    limitePercentual,
+                    saldoDevedor
+                );
+
+        }
+        else{
+
+            descontoConsignado =
+                limitePercentual;
+
+        }
+
+    }
+
+
+    /* -----------------------------------------------
+       RESULTADOS
+    ----------------------------------------------- */
+
+    document.getElementById(
+        'totalVencimentos'
+    ).textContent =
+        moeda(totalVencimentos);
+
+
+    document.getElementById(
+        'totalDescontos'
+    ).textContent =
+        moeda(totalDescontos);
+
+
+    document.getElementById(
+        'remuneracaoDisponivel'
+    ).textContent =
+        moeda(remuneracaoDisponivel);
+
+
+    document.getElementById(
+        'descontoConsignado'
+    ).textContent =
+        moeda(descontoConsignado);
+
+
+    /* -----------------------------------------------
+       MEMÓRIA
+    ----------------------------------------------- */
+
+    let html = '';
+
+
+    html += linha(
+        'Saldo de salário',
+        moeda(saldoSalario)
+    );
+
+    html += linha(
+        'Horas extras',
+        moeda(horasExtras)
+    );
+
+    html += linha(
+        'Anuênio',
+        moeda(anuenio)
+    );
+
+    html += linha(
+        'Adicional noturno',
+        moeda(adicionalNoturno)
+    );
+
+    html += linha(
+        'Insalubridade',
+        moeda(insalubridade)
+    );
+
+    html += linha(
+        'Periculosidade',
+        moeda(periculosidade)
+    );
+
+    html += linha(
+        'DSR / reflexos',
+        moeda(dsr)
+    );
+
+    html += linha(
+        'Outras verbas salariais',
+        moeda(outrasSalariais)
+    );
+
+    html += linha(
+        'Aviso-prévio indenizado',
+        moeda(avisoPrevio)
+    );
+
+    html += linha(
+        'Férias proporcionais',
+        moeda(feriasProporcionais)
+    );
+
+    html += linha(
+        'Férias vencidas',
+        moeda(feriasVencidas)
+    );
+
+    html += linha(
+        'Férias em dobro',
+        moeda(feriasDobro)
+    );
+
+    html += linha(
+        '1/3 de férias',
+        moeda(tercoFerias)
+    );
+
+    html += linha(
+        'Outras férias indenizadas',
+        moeda(outrasFerias)
+    );
+
+
+    html += linha(
+        'TOTAL DE VENCIMENTOS',
+        moeda(totalVencimentos)
+    );
+
+
+    html += linha(
+        '(-) INSS',
+        moeda(inss)
+    );
+
+    html += linha(
+        '(-) IRRF',
+        moeda(irrf)
+    );
+
+    html += linha(
+        '(-) Pensão alimentícia',
+        moeda(pensao)
+    );
+
+    html += linha(
+        '(-) Retenção judicial',
+        moeda(retencaoJudicial)
+    );
+
+    html += linha(
+        '(-) Adiantamento 13º',
+        moeda(adiantamento13)
+    );
+
+    html += linha(
+        '(-) FIES',
+        moeda(fies)
+    );
+
+    html += linha(
+        '(-) Desconto aviso-prévio',
+        moeda(descontoAviso)
+    );
+
+    html += linha(
+        '(-) Multa art. 480',
+        moeda(multa480)
+    );
+
+    html += linha(
+        '(-) Outros compulsórios',
+        moeda(outrosCompulsorios)
+    );
+
+
+    html += linha(
+        'TOTAL DE DESCONTOS',
+        moeda(totalDescontos)
+    );
+
+
+    html += linha(
+        'REMUNERAÇÃO DISPONÍVEL',
+        moeda(remuneracaoDisponivel)
+    );
+
+
+    html += linha(
+        `Percentual de garantia (${percentual.toFixed(2)}%)`,
+        moeda(limitePercentual)
+    );
+
+
+    html += linha(
+        'Saldo devedor',
+        moeda(saldoDevedor)
+    );
+
+
+    html += linha(
+        'DESCONTO MÁXIMO DO eCONSIGNADO',
+        moeda(descontoConsignado)
+    );
+
+
+    if(decimoTerceiro > 0){
+
+        html += linha(
+            '13º salário — informado separadamente',
+            moeda(decimoTerceiro)
+        );
+
+        html += linha(
+            'INSS sobre 13º — informado separadamente',
+            moeda(inss13)
+        );
+
+        html += linha(
+            'IRRF sobre 13º — informado separadamente',
+            moeda(irrf13)
+        );
+
+    }
+
+
+    document.getElementById(
+        'memoria'
+    ).innerHTML = html;
+
+
+    /* -----------------------------------------------
+       ALERTA
+    ----------------------------------------------- */
+
+    if(percentual <= 0){
+
+        mostrarAlerta(
+            'Não há percentual de garantia informado. Conforme a regra aplicável, não deve ser realizado desconto do contrato nas verbas rescisórias.',
+            'warning'
+        );
+
+    }
+    else{
+
+        mostrarAlerta(
+            'Conferência realizada. O desconto calculado corresponde ao menor valor entre o percentual aplicado sobre a remuneração disponível e o saldo devedor informado.',
+            'success'
+        );
+
+    }
+
 }
 
-@media print {
-  body {
-    background: #fff;
-  }
 
-  .header {
-    box-shadow: none;
-    print-color-adjust: exact;
-  }
+/* =====================================================
+   LINHA
+===================================================== */
 
-  .container {
-    max-width: 100%;
-    padding: 0;
-  }
+function linha(descricao, valor){
 
-  .card,
-  .stat-card {
-    box-shadow: none;
-  }
+    return `
+        <div class="memory-row">
+            <span>${descricao}</span>
+            <strong>${valor}</strong>
+        </div>
+    `;
 
-  .filters,
-  .form,
-  .actions,
-  .toast {
-    display: none !important;
-  }
 }
+
+
+/* =====================================================
+   EXEMPLO DO MANUAL
+===================================================== */
+
+function carregarExemplo(){
+
+    limpar();
+
+    /*
+     * Exemplo 1 do Manual:
+     *
+     * Saldo de salário = 5.500,00
+     * Horas extras = 900,00
+     * Aviso prévio = 6.000,00
+     * Férias proporcionais = 665,00
+     * Férias vencidas = 8.000,00
+     *
+     * Desconto faltas = 200,00
+     * IRRF = 450,00
+     * INSS = 670,00
+     * Pensão = 2.500,00
+     *
+     * Remuneração disponível = 17.245,00
+     * Garantia = 25%
+     * Resultado = 4.311,25
+     */
+
+    document.getElementById(
+        'saldoSalario'
+    ).value =
+        'R$ 5.500,00';
+
+
+    document.getElementById(
+        'horasExtras'
+    ).value =
+        'R$ 900,00';
+
+
+    document.getElementById(
+        'avisoPrevio'
+    ).value =
+        'R$ 6.000,00';
+
+
+    document.getElementById(
+        'feriasProporcionais'
+    ).value =
+        'R$ 665,00';
+
+
+    document.getElementById(
+        'feriasVencidas'
+    ).value =
+        'R$ 8.000,00';
+
+
+    document.getElementById(
+        'inss'
+    ).value =
+        'R$ 670,00';
+
+
+    document.getElementById(
+        'irrf'
+    ).value =
+        'R$ 450,00';
+
+
+    document.getElementById(
+        'pensao'
+    ).value =
+        'R$ 2.500,00';
+
+
+    document.getElementById(
+        'saldoDevedor'
+    ).value =
+        'R$ 15.600,00';
+
+
+    document.getElementById(
+        'percentualGarantia'
+    ).value =
+        '25';
+
+
+    calcular();
+
+}
+
+
+/* =====================================================
+   LIMPAR
+===================================================== */
+
+function limpar(){
+
+    const campos =
+        document.querySelectorAll(
+            'input'
+        );
+
+
+    campos.forEach(
+        campo => {
+
+            if(
+                campo.type === 'number'
+            ){
+
+                campo.value = '';
+
+            }
+            else{
+
+                campo.value = '';
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        'totalVencimentos'
+    ).textContent =
+        'R$ 0,00';
+
+
+    document.getElementById(
+        'totalDescontos'
+    ).textContent =
+        'R$ 0,00';
+
+
+    document.getElementById(
+        'remuneracaoDisponivel'
+    ).textContent =
+        'R$ 0,00';
+
+
+    document.getElementById(
+        'descontoConsignado'
+    ).textContent =
+        'R$ 0,00';
+
+
+    document.getElementById(
+        'memoria'
+    ).innerHTML =
+        'Informe os valores e clique em <strong>Calcular conferência</strong>.';
+
+
+    esconderAlerta();
+
+}
+
+
+/* =====================================================
+   ALERTAS
+===================================================== */
+
+function mostrarAlerta(
+    mensagem,
+    tipo
+){
+
+    const alerta =
+        document.getElementById(
+            'alerta'
+        );
+
+
+    alerta.textContent =
+        mensagem;
+
+
+    alerta.className =
+        'alert ' +
+        tipo;
+
+
+    alerta.style.display =
+        'block';
+
+}
+
+
+function esconderAlerta(){
+
+    const alerta =
+        document.getElementById(
+            'alerta'
+        );
+
+
+    alerta.style.display =
+        'none';
+
+}
+
+</script>
+
+</body>
+
+</html>
