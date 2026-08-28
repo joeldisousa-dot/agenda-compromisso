@@ -1,2363 +1,853 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Agenda de Compromissos</title>
-
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --primary-light: #eff6ff;
-
-      --success: #16a34a;
-      --success-light: #f0fdf4;
-
-      --warning: #d97706;
-      --warning-light: #fffbeb;
-
-      --danger: #dc2626;
-      --danger-light: #fef2f2;
-
-      --dark: #111827;
-      --text: #374151;
-      --muted: #6b7280;
-
-      --background: #f3f4f6;
-      --card: #ffffff;
-      --border: #e5e7eb;
-
-      --radius: 16px;
-
-      --shadow:
-        0 10px 30px rgba(15, 23, 42, 0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-
-      font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-      background: var(--background);
-      color: var(--text);
-    }
-
-    /* =====================================================
-       HEADER
-    ===================================================== */
-
-    .header {
-      background:
-        linear-gradient(
-          135deg,
-          #111827 0%,
-          #1e3a8a 100%
-        );
-
-      color: white;
-      padding: 28px 24px;
-    }
-
-    .header-content {
-      max-width: 1400px;
-      margin: auto;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .brand-icon {
-      width: 52px;
-      height: 52px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 14px;
-
-      background: rgba(255,255,255,.12);
-
-      font-size: 27px;
-    }
-
-    .brand h1 {
-      margin: 0;
-
-      font-size: 25px;
-      font-weight: 700;
-    }
-
-    .brand p {
-      margin: 4px 0 0;
-
-      color: rgba(255,255,255,.7);
-
-      font-size: 14px;
-    }
-
-    .today-info {
-      text-align: right;
-    }
-
-    .today-info .label {
-      display: block;
-
-      font-size: 12px;
-      color: rgba(255,255,255,.65);
-
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    .today-info .date {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    /* =====================================================
-       CONTAINER
-    ===================================================== */
-
-    .container {
-      width: 100%;
-      max-width: 1400px;
-
-      margin: 0 auto;
-      padding: 28px 24px 50px;
-    }
-
-    /* =====================================================
-       STATS
-    ===================================================== */
-
-    .stats {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-      gap: 18px;
-
-      margin-bottom: 25px;
-    }
-
-    .stat-card {
-      background: var(--card);
-
-      border: 1px solid var(--border);
-
-      border-radius: var(--radius);
-
-      padding: 20px;
-
-      box-shadow: var(--shadow);
-
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .stat-icon {
-      width: 48px;
-      height: 48px;
-
-      flex-shrink: 0;
-
-      border-radius: 13px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 22px;
-    }
-
-    .stat-icon.blue {
-      background: var(--primary-light);
-    }
-
-    .stat-icon.green {
-      background: var(--success-light);
-    }
-
-    .stat-icon.orange {
-      background: var(--warning-light);
-    }
-
-    .stat-icon.red {
-      background: var(--danger-light);
-    }
-
-    .stat-title {
-      font-size: 13px;
-      color: var(--muted);
-
-      margin-bottom: 4px;
-    }
-
-    .stat-value {
-      font-size: 25px;
-      font-weight: 750;
-      color: var(--dark);
-    }
-
-    /* =====================================================
-       GRID PRINCIPAL
-    ===================================================== */
-
-    .layout {
-      display: grid;
-
-      grid-template-columns:
-        minmax(0, 1fr)
-        380px;
-
-      gap: 24px;
-
-      align-items: start;
-    }
-
-    .card {
-      background: var(--card);
-
-      border: 1px solid var(--border);
-
-      border-radius: var(--radius);
-
-      box-shadow: var(--shadow);
-    }
-
-    .card-header {
-      padding: 20px 22px;
-
-      border-bottom: 1px solid var(--border);
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      gap: 15px;
-    }
-
-    .card-title {
-      margin: 0;
-
-      color: var(--dark);
-
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .card-subtitle {
-      margin: 4px 0 0;
-
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* =====================================================
-       FILTROS
-    ===================================================== */
-
-    .filters {
-      padding: 16px 22px;
-
-      background: #fafafa;
-
-      border-bottom: 1px solid var(--border);
-
-      display: flex;
-      gap: 10px;
-      align-items: end;
-      flex-wrap: wrap;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-
-      flex: 1;
-      min-width: 160px;
-    }
-
-    .field label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-    }
-
-    input,
-    select {
-      width: 100%;
-
-      height: 44px;
-
-      border: 1px solid var(--border);
-
-      border-radius: 10px;
-
-      padding: 0 13px;
-
-      background: white;
-
-      color: var(--dark);
-
-      font-size: 14px;
-
-      outline: none;
-
-      transition:
-        border-color .2s,
-        box-shadow .2s;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--primary);
-
-      box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, .12);
-    }
-
-    /* =====================================================
-       BOTÕES
-    ===================================================== */
-
-    button {
-      height: 44px;
-
-      border: 0;
-
-      border-radius: 10px;
-
-      padding: 0 16px;
-
-      font-size: 14px;
-
-      font-weight: 600;
-
-      cursor: pointer;
-
-      transition:
-        transform .15s,
-        background .2s,
-        box-shadow .2s;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      opacity: .65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-
-      box-shadow:
-        0 5px 15px
-        rgba(37, 99, 235, .22);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-secondary {
-      background: #f3f4f6;
-      color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-    }
-
-    .btn-full {
-      width: 100%;
-    }
-
-    /* =====================================================
-       GRID DE COMPROMISSOS
-    ===================================================== */
-
-    .appointments {
-      padding: 22px;
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fill,
-          minmax(250px, 1fr)
-        );
-
-      gap: 15px;
-    }
-
-    .appointment {
-      position: relative;
-
-      background: white;
-
-      border: 1px solid var(--border);
-
-      border-radius: 14px;
-
-      padding: 17px;
-
-      transition:
-        transform .2s,
-        box-shadow .2s,
-        border-color .2s;
-    }
-
-    .appointment:hover {
-      transform: translateY(-2px);
-
-      border-color: #bfdbfe;
-
-      box-shadow:
-        0 8px 25px
-        rgba(15, 23, 42, .08);
-    }
-
-    .appointment.now {
-      border:
-        2px solid var(--primary);
-
-      background:
-        linear-gradient(
-          135deg,
-          #eff6ff,
-          #ffffff
-        );
-    }
-
-    .appointment.done {
-      opacity: .65;
-    }
-
-    .appointment-top {
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 10px;
-
-      margin-bottom: 14px;
-    }
-
-    .time {
-      display: flex;
-
-      align-items: center;
-
-      gap: 7px;
-
-      font-size: 21px;
-
-      font-weight: 750;
-
-      color: var(--dark);
-    }
-
-    .time-icon {
-      color: var(--primary);
-
-      font-size: 18px;
-    }
-
-    .badge {
-      display: inline-flex;
-
-      align-items: center;
-
-      padding: 5px 9px;
-
-      border-radius: 20px;
-
-      font-size: 11px;
-
-      font-weight: 700;
-
-      text-transform: uppercase;
-    }
-
-    .badge-now {
-      color: #1d4ed8;
-
-      background: #dbeafe;
-    }
-
-    .badge-done {
-      color: #166534;
-
-      background: #dcfce7;
-    }
-
-    .badge-pending {
-      color: #92400e;
-
-      background: #fef3c7;
-    }
-
-    .appointment-title {
-      margin: 0 0 12px;
-
-      color: var(--dark);
-
-      font-size: 16px;
-
-      font-weight: 650;
-
-      line-height: 1.4;
-    }
-
-    .appointment-date {
-      color: var(--muted);
-
-      font-size: 12px;
-
-      margin-bottom: 15px;
-    }
-
-    .appointment-footer {
-      padding-top: 13px;
-
-      border-top: 1px solid var(--border);
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 10px;
-    }
-
-    .check-container {
-      display: flex;
-
-      align-items: center;
-
-      gap: 8px;
-
-      font-size: 13px;
-
-      color: var(--muted);
-
-      cursor: pointer;
-    }
-
-    .check-container input {
-      width: 18px;
-      height: 18px;
-
-      accent-color: var(--success);
-
-      cursor: pointer;
-    }
-
-    /* =====================================================
-       EMPTY STATE
-    ===================================================== */
-
-    .empty {
-      padding: 60px 20px;
-
-      text-align: center;
-
-      color: var(--muted);
-
-      grid-column: 1 / -1;
-    }
-
-    .empty-icon {
-      font-size: 45px;
-
-      margin-bottom: 10px;
-    }
-
-    .empty h3 {
-      margin: 0 0 7px;
-
-      color: var(--dark);
-    }
-
-    .empty p {
-      margin: 0;
-
-      font-size: 14px;
-    }
-
-    /* =====================================================
-       FORMULÁRIO
-    ===================================================== */
-
-    .form {
-      padding: 22px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-
-      margin-bottom: 7px;
-
-      font-size: 13px;
-
-      font-weight: 600;
-
-      color: var(--text);
-    }
-
-    .form-actions {
-      margin-top: 22px;
-    }
-
-    /* =====================================================
-       LOADING
-    ===================================================== */
-
-    .loading {
-      padding: 50px;
-
-      text-align: center;
-
-      color: var(--muted);
-
-      grid-column: 1 / -1;
-    }
-
-    .spinner {
-      width: 35px;
-      height: 35px;
-
-      margin: 0 auto 12px;
-
-      border:
-        3px solid #e5e7eb;
-
-      border-top-color:
-        var(--primary);
-
-      border-radius: 50%;
-
-      animation:
-        spin .8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* =====================================================
-       TOAST
-    ===================================================== */
-
-    .toast {
-      position: fixed;
-
-      right: 22px;
-      bottom: 22px;
-
-      min-width: 280px;
-
-      max-width: 400px;
-
-      padding: 14px 17px;
-
-      border-radius: 12px;
-
-      background: #111827;
-
-      color: white;
-
-      box-shadow:
-        0 15px 35px
-        rgba(0,0,0,.2);
-
-      font-size: 14px;
-
-      transform:
-        translateY(120px);
-
-      opacity: 0;
-
-      pointer-events: none;
-
-      transition:
-        all .3s ease;
-
-      z-index: 9999;
-    }
-
-    .toast.show {
-      transform:
-        translateY(0);
-
-      opacity: 1;
-    }
-
-    .toast.success {
-      background: #166534;
-    }
-
-    .toast.error {
-      background: #991b1b;
-    }
-
-    /* =====================================================
-       RESPONSIVO
-    ===================================================== */
-
-    @media (max-width: 1050px) {
-
-      .stats {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-    }
-
-    @media (max-width: 650px) {
-
-      .header {
-        padding: 20px 16px;
-      }
-
-      .header-content {
-        align-items: flex-start;
-
-        flex-direction: column;
-      }
-
-      .today-info {
-        text-align: left;
-      }
-
-      .container {
-        padding:
-          18px 14px 40px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .card-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-      }
-
-      .filters {
-        padding: 15px;
-      }
-
-      .appointments {
-        padding: 15px;
-
-        grid-template-columns: 1fr;
-      }
-
-      .brand h1 {
-        font-size: 21px;
-      }
-
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- =====================================================
-       HEADER
-  ====================================================== -->
-
-  <header class="header">
-
-    <div class="header-content">
-
-      <div class="brand">
-
-        <div class="brand-icon">
-          📅
-        </div>
-
-        <div>
-          <h1>Agenda de Compromissos</h1>
-
-          <p>
-            Controle diário dos seus compromissos
-          </p>
-        </div>
-
-      </div>
-
-      <div class="today-info">
-
-        <span class="label">
-          Hoje
-        </span>
-
-        <span
-          class="date"
-          id="dataHoje">
-          --
-        </span>
-
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- =====================================================
-       CONTAINER
-  ====================================================== -->
-
-  <main class="container">
-
-
-    <!-- ===================================================
-         INDICADORES
-    ==================================================== -->
-
-    <section class="stats">
-
-      <div class="stat-card">
-
-        <div class="stat-icon blue">
-          📅
-        </div>
-
-        <div>
-
-          <div class="stat-title">
-            Compromissos hoje
-          </div>
-
-          <div
-            class="stat-value"
-            id="totalHoje">
-            0
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon orange">
-          ⏰
-        </div>
-
-        <div>
-
-          <div class="stat-title">
-            Pendentes
-          </div>
-
-          <div
-            class="stat-value"
-            id="totalPendentes">
-            0
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon green">
-          ✓
-        </div>
-
-        <div>
-
-          <div class="stat-title">
-            Concluídos
-          </div>
-
-          <div
-            class="stat-value"
-            id="totalConcluidos">
-            0
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon red">
-          📋
-        </div>
-
-        <div>
-
-          <div class="stat-title">
-            Total cadastrados
-          </div>
-
-          <div
-            class="stat-value"
-            id="totalGeral">
-            0
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ===================================================
-         LAYOUT
-    ==================================================== -->
-
-    <section class="layout">
-
-
-      <!-- ================================================
-           COMPROMISSOS
-      ================================================= -->
-
-      <div class="card">
-
-        <div class="card-header">
-
-          <div>
-
-            <h2 class="card-title">
-              Compromissos
-            </h2>
-
-            <p class="card-subtitle">
-              Agenda atualizada automaticamente
-            </p>
-
-          </div>
-
-          <button
-            class="btn-secondary"
-            onclick="carregar()">
-
-            🔄 Atualizar
-
-          </button>
-
-        </div>
-
-
-        <!-- FILTROS -->
-
-        <div class="filters">
-
-          <div class="field">
-
-            <label for="filtroData">
-              Consultar data
-            </label>
-
-            <input
-              type="date"
-              id="filtroData">
-
-          </div>
-
-          <button
-            class="btn-primary"
-            onclick="filtrarData()">
-
-            🔎 Consultar
-
-          </button>
-
-          <button
-            class="btn-secondary"
-            onclick="mostrarHoje()">
-
-            Hoje
-
-          </button>
-
-        </div>
-
-
-        <!-- GRID -->
-
-        <div
-          class="appointments"
-          id="relatorio">
-
-          <div class="loading">
-
-            <div class="spinner"></div>
-
-            Carregando compromissos...
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- ================================================
-           NOVO COMPROMISSO
-      ================================================= -->
-
-      <aside class="card">
-
-        <div class="card-header">
-
-          <div>
-
-            <h2 class="card-title">
-              Novo compromisso
-            </h2>
-
-            <p class="card-subtitle">
-              Cadastre um novo compromisso
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <form
-          class="form"
-          id="formCompromisso">
-
-
-          <div class="form-group">
-
-            <label for="data">
-              Data
-            </label>
-
-            <input
-              type="date"
-              id="data"
-              required>
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="horario">
-              Horário
-            </label>
-
-            <input
-              type="time"
-              id="horario"
-              required>
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="compromisso">
-              Compromisso
-            </label>
-
-            <input
-              type="text"
-              id="compromisso"
-              placeholder="Ex.: Reunião com cliente"
-              maxlength="200"
-              required>
-
-          </div>
-
-
-          <div class="form-actions">
-
-            <button
-              type="submit"
-              class="btn-primary btn-full"
-              id="btnSalvar">
-
-              💾 Salvar compromisso
-
-            </button>
-
-          </div>
-
-        </form>
-
-      </aside>
-
-    </section>
-
-  </main>
-
-
-  <!-- TOAST -->
-
-  <div
-    id="toast"
-    class="toast">
-  </div>
-
-
-  <script>
-
-    /* =====================================================
-       CONFIGURAÇÃO DA API
-       
-       URL DO GOOGLE APPS SCRIPT
-    ====================================================== */
-
-   const API_URL =
-  "https://script.google.com/macros/s/AKfycbx3WaWDuPnsrE5VnER1yygkRsEkG76ZLsuhRC0_yyXW2AI0usQ1h_DVK49M7MTq_Ss/exec";
-
-
-
-    let compromissos = [];
-
-    let dataSelecionada = "";
-
-
-    /* =====================================================
-       ELEMENTOS
-    ====================================================== */
-
-    const form =
-      document.getElementById(
-        "formCompromisso"
-      );
-
-    const relatorio =
-      document.getElementById(
-        "relatorio"
-      );
-
-
-    /* =====================================================
-       DATA LOCAL - HOJE
-    ====================================================== */
-
-    function hojeISO() {
-
-      const agora =
-        new Date();
-
-      const ano =
-        agora.getFullYear();
-
-      const mes =
-        String(
-          agora.getMonth() + 1
-        ).padStart(2, "0");
-
-      const dia =
-        String(
-          agora.getDate()
-        ).padStart(2, "0");
-
-      return (
-        ano +
-        "-" +
-        mes +
-        "-" +
-        dia
-      );
-
-    }
-
-
-    /* =====================================================
-       FORMATAÇÃO DE DATA
-    ====================================================== */
-
-    function formatarData(data) {
-
-      if (!data) {
-        return "";
-      }
-
-      const partes =
-        String(data).split("-");
-
-      if (
-        partes.length === 3
-      ) {
-
-        return (
-          partes[2] +
-          "/" +
-          partes[1] +
-          "/" +
-          partes[0]
-        );
-
-      }
-
-      return data;
-
-    }
-
-
-    /* =====================================================
-       ESCAPE HTML
-    ====================================================== */
-
-    function escapeHtml(valor) {
-
-      return String(
-        valor ?? ""
-      )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
-
-    }
-
-
-    /* =====================================================
-       ESCAPE JAVASCRIPT
-    ====================================================== */
-
-    function escapeJs(valor) {
-
-      return String(
-        valor ?? ""
-      )
-      .replace(
-        /\\/g,
-        "\\\\"
-      )
-      .replace(
-        /'/g,
-        "\\'"
-      )
-      .replace(
-        /"/g,
-        '\\"'
-      )
-      .replace(
-        /\n/g,
-        "\\n"
-      )
-      .replace(
-        /\r/g,
-        "\\r"
-      );
-
-    }
-
-
-    /* =====================================================
-       MOSTRAR DATA DE HOJE
-    ====================================================== */
-
-    function configurarDataHoje() {
-
-      const hoje =
-        hojeISO();
-
-      document
-        .getElementById("dataHoje")
-        .textContent =
-        formatarData(
-          hoje
-        );
-
-      document
-        .getElementById("data")
-        .value =
-        hoje;
-
-      document
-        .getElementById("filtroData")
-        .value =
-        hoje;
-
-      dataSelecionada =
-        hoje;
-
-    }
-
-
-    /* =====================================================
-       TOAST
-    ====================================================== */
-
-    function mostrarToast(
-      mensagem,
-      tipo = "success"
-    ) {
-
-      const toast =
-        document.getElementById(
-          "toast"
-        );
-
-      toast.textContent =
-        mensagem;
-
-      toast.className =
-        "toast show " +
-        tipo;
-
-      setTimeout(
-        function() {
-
-          toast.classList.remove(
-            "show"
-          );
-
-        },
-        3000
-      );
-
-    }
-
-
-    /* =====================================================
-       SALVAR
-    ====================================================== */
-
-    form.addEventListener(
-      "submit",
-      async function(e) {
-
-        e.preventDefault();
-
-        const btn =
-          document.getElementById(
-            "btnSalvar"
-          );
-
-
-        const dados = {
-
-          acao:
-            "salvar",
-
-          data:
-            document.getElementById(
-              "data"
-            ).value,
-
-          horario:
-            document.getElementById(
-              "horario"
-            ).value,
-
-          compromisso:
-            document.getElementById(
-              "compromisso"
-            ).value.trim(),
-
-          baixado:
-            "Não"
-
-        };
-
-
-        if (
-          !dados.data ||
-          !dados.horario ||
-          !dados.compromisso
-        ) {
-
-          mostrarToast(
-            "Preencha todos os campos.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        btn.disabled = true;
-
-        btn.textContent =
-          "Salvando...";
-
-
-        try {
-
-          const resposta =
-            await fetch(
-              API_URL,
-              {
-
-                method: "POST",
-
-                body:
-                  JSON.stringify(
-                    dados
-                  )
-
-              }
-            );
-
-
-          if (!resposta.ok) {
-
-            throw new Error(
-              "Erro HTTP " +
-              resposta.status
-            );
-
-          }
-
-
-          const resultado =
-            await resposta.json();
-
-
-          if (
-            resultado &&
-            resultado.sucesso === false
-          ) {
-
-            throw new Error(
-              resultado.erro ||
-              "Erro ao salvar."
-            );
-
-          }
-
-
-          mostrarToast(
-            "✅ Compromisso salvo com sucesso!"
-          );
-
-
-          form.reset();
-
-
-          document
-            .getElementById(
-              "data"
-            )
-            .value =
-            dataSelecionada ||
-            hojeISO();
-
-
-          carregar();
-
-        } catch (erro) {
-
-          console.error(
-            "Erro ao salvar:",
-            erro
-          );
-
-          mostrarToast(
-            erro.message ||
-            "Não foi possível salvar o compromisso.",
-            "error"
-          );
-
-        } finally {
-
-          btn.disabled =
-            false;
-
-          btn.textContent =
-            "💾 Salvar compromisso";
-
-        }
-
-      }
+:root {
+  --primary: #315bea;
+  --primary-dark: #2448c7;
+  --primary-light: #eef2ff;
+
+  --success: #159570;
+  --success-light: #ecfdf5;
+
+  --warning: #d88919;
+  --warning-light: #fff8e7;
+
+  --danger: #d94b61;
+  --danger-light: #fff1f3;
+
+  --dark: #172033;
+  --text: #455269;
+  --muted: #78859a;
+
+  --background: #f5f7fb;
+  --card: #ffffff;
+  --border: #e7ebf2;
+
+  --radius: 18px;
+
+  --shadow:
+    0 12px 35px rgba(31, 44, 76, .07);
+
+  --shadow-hover:
+    0 18px 42px rgba(31, 44, 76, .13);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(49, 91, 234, .07),
+      transparent 32rem
+    ),
+    var(--background);
+
+  color: var(--text);
+}
+
+/* HEADER */
+
+.header {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      125deg,
+      #172033 0%,
+      #243a78 52%,
+      #315bea 100%
     );
 
+  color: #fff;
+  padding: 32px 24px;
 
-    /* =====================================================
-       CARREGAR
-    ====================================================== */
+  box-shadow:
+    0 8px 25px rgba(23, 32, 51, .18);
+}
 
-    async function carregar() {
+.header::after {
+  content: "";
 
-      relatorio.innerHTML = `
+  position: absolute;
+  width: 300px;
+  height: 300px;
 
-        <div class="loading">
+  right: -90px;
+  top: -160px;
 
-          <div class="spinner"></div>
+  border-radius: 50%;
 
-          Carregando compromissos...
+  background: rgba(255, 255, 255, .08);
+}
 
-        </div>
+.header-content {
+  position: relative;
+  z-index: 1;
 
-      `;
+  max-width: 1400px;
+  margin: auto;
 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
 
-      try {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
-        const resposta =
-          await fetch(
-            API_URL + "?t=" + Date.now()
-          );
+.brand-icon {
+  width: 58px;
+  height: 58px;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-        if (!resposta.ok) {
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 17px;
 
-          throw new Error(
-            "Erro HTTP " +
-            resposta.status
-          );
+  background: rgba(255, 255, 255, .13);
 
-        }
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    0 8px 20px rgba(0,0,0,.12);
 
+  font-size: 28px;
+}
 
-        const dados =
-          await resposta.json();
+.brand h1 {
+  margin: 0;
 
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -.025em;
+}
 
-        if (
-          !Array.isArray(dados)
-        ) {
+.brand p {
+  margin: 6px 0 0;
 
-          if (
-            dados &&
-            dados.sucesso === false
-          ) {
+  color: rgba(255,255,255,.72);
+  font-size: 14px;
+}
 
-            throw new Error(
-              dados.erro ||
-              "Erro retornado pela API."
-            );
+.today-info {
+  position: relative;
+  z-index: 1;
 
-          }
+  min-width: 155px;
+  padding: 12px 16px;
 
-          dados = [];
+  text-align: right;
 
-        }
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 13px;
 
+  background: rgba(255,255,255,.09);
+  backdrop-filter: blur(10px);
+}
 
-        compromissos =
-          dados;
+.today-info .label {
+  display: block;
 
+  margin-bottom: 4px;
 
-        renderizar();
+  color: rgba(255,255,255,.62);
 
-      } catch (erro) {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
 
-        console.error(
-          "Erro ao carregar:",
-          erro
-        );
+.today-info .date {
+  font-size: 18px;
+  font-weight: 700;
+}
 
+/* CONTAINER */
 
-        relatorio.innerHTML = `
+.container {
+  width: 100%;
+  max-width: 1400px;
 
-          <div class="empty">
+  margin: 0 auto;
+  padding: 30px 24px 54px;
+}
 
-            <div class="empty-icon">
-              ⚠️
-            </div>
+/* INDICADORES */
 
-            <h3>
-              Não foi possível carregar
-            </h3>
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
 
-            <p>
-              ${escapeHtml(
-                erro.message ||
-                "Verifique a conexão com a API."
-              )}
-            </p>
+  margin-bottom: 26px;
+}
 
-          </div>
+.stat-card {
+  position: relative;
+  overflow: hidden;
 
-        `;
+  min-height: 106px;
 
-      }
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 
-    }
+  padding: 20px;
 
+  box-shadow: var(--shadow);
 
-    /* =====================================================
-       RENDERIZAR
-    ====================================================== */
+  display: flex;
+  align-items: center;
+  gap: 15px;
 
-    function renderizar() {
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
 
-      const dataFiltro =
-        dataSelecionada ||
-        hojeISO();
+.stat-card::after {
+  content: "";
 
+  position: absolute;
+  width: 90px;
+  height: 90px;
 
-      let lista =
-        compromissos.filter(
-          function(item) {
+  right: -35px;
+  bottom: -45px;
 
-            return normalizarData(
-              item.data
-            ) === dataFiltro;
+  border-radius: 50%;
+  background: rgba(49, 91, 234, .045);
+}
 
-          }
-        );
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
 
+.stat-icon {
+  width: 51px;
+  height: 51px;
 
-      /* Ordena por horário */
+  flex-shrink: 0;
 
-      lista.sort(
-        function(a, b) {
+  border-radius: 15px;
 
-          return converterMinutos(
-            a.horario
-          ) -
-          converterMinutos(
-            b.horario
-          );
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-        }
-      );
+  font-size: 22px;
+}
 
+.stat-icon.blue {
+  color: var(--primary);
+  background: var(--primary-light);
+}
 
-      atualizarEstatisticas(
-        lista
-      );
+.stat-icon.green {
+  color: var(--success);
+  background: var(--success-light);
+}
 
+.stat-icon.orange {
+  color: var(--warning);
+  background: var(--warning-light);
+}
 
-      if (
-        lista.length === 0
-      ) {
+.stat-icon.red {
+  color: var(--danger);
+  background: var(--danger-light);
+}
 
-        relatorio.innerHTML = `
+.stat-title {
+  margin-bottom: 5px;
 
-          <div class="empty">
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
 
-            <div class="empty-icon">
-              📭
-            </div>
+.stat-value {
+  color: var(--dark);
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
 
-            <h3>
-              Nenhum compromisso
-            </h3>
+/* ESTRUTURA */
 
-            <p>
-              Não existem compromissos
-              para ${formatarData(dataFiltro)}.
-            </p>
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 24px;
+  align-items: start;
+}
 
-          </div>
+.card {
+  overflow: hidden;
 
-        `;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 
-        return;
+  box-shadow: var(--shadow);
+}
 
-      }
+/* CABEÇALHOS DOS CARDS */
 
+.card-header {
+  padding: 22px 24px;
 
-      const agora =
-        new Date();
+  border-bottom: 1px solid var(--border);
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
 
-      const hoje =
-        hojeISO();
+.card-title {
+  margin: 0;
 
+  color: var(--dark);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -.015em;
+}
 
-      let html = "";
+.card-subtitle {
+  margin: 5px 0 0;
 
+  color: var(--muted);
+  font-size: 13px;
+}
 
-      lista.forEach(
-        function(c) {
+/* FILTROS */
 
-          const data =
-            normalizarData(
-              c.data
-            );
+.filters {
+  padding: 17px 24px;
 
-          const horario =
-            formatarHorario(
-              c.horario
-            );
+  background: #fbfcfe;
+  border-bottom: 1px solid var(--border);
 
-          const minutos =
-            converterMinutos(
-              horario
-            );
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 11px;
+}
 
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 
-          const minutosAgora =
-            agora.getHours() * 60 +
-            agora.getMinutes();
+  flex: 1;
+  min-width: 160px;
+}
 
+.field label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
 
-          const isHoje =
-            data === hoje;
+input,
+select {
+  width: 100%;
+  height: 45px;
 
+  border: 1px solid #dfe4ec;
+  border-radius: 11px;
 
-          /*
-           * Considera "Agora" dentro de
-           * uma janela de 60 minutos.
-           */
+  padding: 0 14px;
 
-          const isAgora =
-            isHoje &&
-            minutos <= minutosAgora &&
-            minutos + 60 >= minutosAgora;
+  outline: none;
+  background: #fff;
+  color: var(--dark);
 
+  font: inherit;
+  font-size: 14px;
 
-          const concluido =
-            String(
-              c.baixado || ""
-            ).trim().toLowerCase() ===
-            "sim";
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
 
+input:hover,
+select:hover {
+  border-color: #c5cfdf;
+}
 
-          let badge = "";
+input:focus,
+select:focus {
+  border-color: var(--primary);
+  background: #fff;
 
+  box-shadow:
+    0 0 0 4px rgba(49, 91, 234, .11);
+}
 
-          if (concluido) {
+/* BOTÕES */
 
-            badge = `
+button {
+  height: 45px;
 
-              <span class="badge badge-done">
-                ✓ Concluído
-              </span>
+  border: 0;
+  border-radius: 11px;
 
-            `;
+  padding: 0 17px;
 
-          } else if (isAgora) {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
 
-            badge = `
+  cursor: pointer;
 
-              <span class="badge badge-now">
-                ● Agora
-              </span>
+  transition:
+    transform .18s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    opacity .2s ease;
+}
 
-            `;
+button:hover {
+  transform: translateY(-2px);
+}
 
-          } else {
+button:active {
+  transform: translateY(0);
+}
 
-            badge = `
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
 
-              <span class="badge badge-pending">
-                Pendente
-              </span>
+.btn-primary {
+  color: #fff;
+  background: var(--primary);
 
-            `;
+  box-shadow:
+    0 7px 17px rgba(49, 91, 234, .24);
+}
 
-          }
+.btn-primary:hover {
+  background: var(--primary-dark);
+  box-shadow:
+    0 9px 22px rgba(49, 91, 234, .3);
+}
 
+.btn-secondary {
+  color: var(--text);
+  background: #f1f4f8;
+  border: 1px solid #e5e9f0;
+}
 
-          html += `
+.btn-secondary:hover {
+  background: #e7ebf2;
+}
 
-            <article
-              class="
-                appointment
-                ${isAgora ? "now" : ""}
-                ${concluido ? "done" : ""}
-              "
-            >
+.btn-full {
+  width: 100%;
+}
 
-              <div class="appointment-top">
+/* COMPROMISSOS */
 
-                <div class="time">
+.appointments {
+  padding: 24px;
 
-                  <span class="time-icon">
-                    🕐
-                  </span>
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 16px;
+}
 
-                  ${escapeHtml(horario)}
+.appointment {
+  position: relative;
 
-                </div>
+  overflow: hidden;
 
-                ${badge}
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+
+  padding: 18px;
 
-              </div>
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.appointment::before {
+  content: "";
 
+  position: absolute;
+  inset: 0 auto 0 0;
 
-              <h3 class="appointment-title">
+  width: 4px;
 
-                ${escapeHtml(
-                  c.compromisso
-                )}
+  background: #dbe2ef;
+}
 
-              </h3>
+.appointment:hover {
+  transform: translateY(-3px);
 
+  border-color: #c9d6f8;
+  box-shadow: var(--shadow-hover);
+}
 
-              <div class="appointment-date">
+.appointment.now {
+  border: 2px solid var(--primary);
+  background: linear-gradient(135deg, #f0f4ff, #fff);
+}
 
-                📅 ${escapeHtml(
-                  formatarData(data)
-                )}
+.appointment.now::before {
+  background: var(--primary);
+}
 
-              </div>
+.appointment.done {
+  opacity: .62;
+}
 
+.appointment-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
 
-              <div class="appointment-footer">
+.time {
+  display: flex;
+  align-items: center;
+  gap: 7px;
 
-                <label
-                  class="check-container"
-                >
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
 
-                  <input
-                    type="checkbox"
-                    ${concluido ? "checked" : ""}
-                    onchange="
-                      atualizar(
-                        '${escapeJs(c.id)}',
-                        this.checked
-                      )
-                    "
-                  >
+.time-icon {
+  color: var(--primary);
+  font-size: 17px;
+}
 
-                  <span>
-                    ${
-                      concluido
-                        ? "Baixado"
-                        : "Marcar como concluído"
-                    }
-                  </span>
+.badge {
+  display: inline-flex;
+  align-items: center;
 
-                </label>
+  padding: 6px 10px;
+  border-radius: 30px;
 
-              </div>
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
 
-            </article>
+.badge-now {
+  color: #254bc4;
+  background: #dfe7ff;
+}
 
-          `;
+.badge-done {
+  color: #087653;
+  background: #d9f8ec;
+}
 
-        }
-      );
+.badge-pending {
+  color: #a76708;
+  background: #fff0c9;
+}
 
+.appointment-title {
+  min-height: 45px;
+  margin: 0 0 13px;
 
-      relatorio.innerHTML =
-        html;
+  color: var(--dark);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.42;
+}
+
+.appointment-date {
+  margin-bottom: 16px;
+
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.appointment-footer {
+  padding-top: 14px;
 
-    }
+  border-top: 1px solid var(--border);
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
 
-    /* =====================================================
-       ESTATÍSTICAS
-    ====================================================== */
+.check-container {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
 
-    function atualizarEstatisticas(
-      lista
-    ) {
+.check-container input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
 
-      const concluidos =
-        lista.filter(
-          function(item) {
+  accent-color: var(--success);
+  cursor: pointer;
+}
 
-            return String(
-              item.baixado || ""
-            ).trim().toLowerCase() ===
-            "sim";
+/* FORMULÁRIO */
 
-          }
-        ).length;
+.form {
+  padding: 24px;
+}
 
+.form-group {
+  margin-bottom: 18px;
+}
 
-      const pendentes =
-        lista.length -
-        concluidos;
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
 
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 750;
+}
 
-      document
-        .getElementById(
-          "totalHoje"
-        )
-        .textContent =
-        lista.length;
+.form-actions {
+  margin-top: 25px;
+}
 
+/* ESTADOS */
 
-      document
-        .getElementById(
-          "totalPendentes"
-        )
-        .textContent =
-        pendentes;
+.empty {
+  grid-column: 1 / -1;
+  padding: 66px 20px;
 
+  text-align: center;
+  color: var(--muted);
+}
 
-      document
-        .getElementById(
-          "totalConcluidos"
-        )
-        .textContent =
-        concluidos;
+.empty-icon {
+  margin-bottom: 12px;
+  font-size: 46px;
+  filter: grayscale(.15);
+}
 
+.empty h3 {
+  margin: 0 0 7px;
+  color: var(--dark);
+  font-size: 17px;
+}
 
-      document
-        .getElementById(
-          "totalGeral"
-        )
-        .textContent =
-        compromissos.length;
+.empty p {
+  margin: 0;
+  font-size: 13px;
+}
 
-    }
+.loading {
+  grid-column: 1 / -1;
+  padding: 55px;
 
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
 
-    /* =====================================================
-       ATUALIZAR STATUS
-    ====================================================== */
+.spinner {
+  width: 36px;
+  height: 36px;
 
-    async function atualizar(
-      id,
-      marcado
-    ) {
-
-      const dados = {
-
-        acao:
-          "atualizar",
-
-        id:
-          id,
-
-        baixado:
-          marcado
-            ? "Sim"
-            : "Não"
-
-      };
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL,
-            {
-
-              method: "POST",
-
-              body:
-                JSON.stringify(
-                  dados
-                )
-
-            }
-          );
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            "Erro HTTP " +
-            resposta.status
-          );
-
-        }
-
-
-        const resultado =
-          await resposta.json();
-
-
-        if (
-          resultado &&
-          resultado.sucesso === false
-        ) {
-
-          throw new Error(
-            resultado.erro ||
-            "Erro ao atualizar."
-          );
-
-        }
-
-
-        mostrarToast(
-          marcado
-            ? "✅ Compromisso concluído."
-            : "Compromisso reaberto."
-        );
-
-
-        carregar();
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao atualizar:",
-          erro
-        );
-
-
-        mostrarToast(
-          erro.message ||
-          "Erro ao atualizar o compromisso.",
-          "error"
-        );
-
-
-        carregar();
-
-      }
-
-    }
-
-
-    /* =====================================================
-       FILTRAR DATA
-    ====================================================== */
-
-    function filtrarData() {
-
-      const data =
-        document
-          .getElementById(
-            "filtroData"
-          )
-          .value;
-
-
-      if (!data) {
-
-        mostrarToast(
-          "Selecione uma data.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      dataSelecionada =
-        data;
-
-
-      renderizar();
-
-    }
-
-
-    /* =====================================================
-       MOSTRAR HOJE
-    ====================================================== */
-
-    function mostrarHoje() {
-
-      const hoje =
-        hojeISO();
-
-
-      dataSelecionada =
-        hoje;
-
-
-      document
-        .getElementById(
-          "filtroData"
-        )
-        .value =
-        hoje;
-
-
-      renderizar();
-
-    }
-
-
-    /* =====================================================
-       NORMALIZAR DATA
-    ====================================================== */
-
-    function normalizarData(
-      valor
-    ) {
-
-      if (!valor) {
-        return "";
-      }
-
-
-      let texto =
-        String(valor)
-          .trim();
-
-
-      /*
-       * yyyy-MM-dd
-       */
-
-      let match =
-        texto.match(
-          /^(\d{4})-(\d{1,2})-(\d{1,2})/
-        );
-
-
-      if (match) {
-
-        return (
-          match[1] +
-          "-" +
-          String(
-            match[2]
-          ).padStart(2, "0") +
-          "-" +
-          String(
-            match[3]
-          ).padStart(2, "0")
-        );
-
-      }
-
-
-      /*
-       * dd/MM/yyyy
-       */
-
-      match =
-        texto.match(
-          /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
-        );
-
-
-      if (match) {
-
-        return (
-          match[3] +
-          "-" +
-          String(
-            match[2]
-          ).padStart(2, "0") +
-          "-" +
-          String(
-            match[1]
-          ).padStart(2, "0")
-        );
-
-      }
-
-
-      /*
-       * Date string
-       */
-
-      const date =
-        new Date(valor);
-
-
-      if (
-        !isNaN(
-          date.getTime()
-        )
-      ) {
-
-        return (
-          date.getFullYear() +
-          "-" +
-          String(
-            date.getMonth() + 1
-          ).padStart(2, "0") +
-          "-" +
-          String(
-            date.getDate()
-          ).padStart(2, "0")
-        );
-
-      }
-
-
-      return "";
-
-    }
-
-
-    /* =====================================================
-       HORÁRIO
-    ====================================================== */
-
-    function formatarHorario(
-      valor
-    ) {
-
-      if (!valor) {
-        return "";
-      }
-
-
-      const texto =
-        String(valor)
-          .trim();
-
-
-      const match =
-        texto.match(
-          /(\d{1,2}):(\d{2})/
-        );
-
-
-      if (!match) {
-
-        return texto;
-
-      }
-
-
-      return (
-        String(
-          match[1]
-        ).padStart(2, "0") +
-        ":" +
-        match[2]
-      );
-
-    }
-
-
-    /* =====================================================
-       HORA PARA MINUTOS
-    ====================================================== */
-
-    function converterMinutos(
-      horario
-    ) {
-
-      const texto =
-        formatarHorario(
-          horario
-        );
-
-
-      const partes =
-        texto.split(":");
-
-
-      if (
-        partes.length < 2
-      ) {
-
-        return 999999;
-
-      }
-
-
-      return (
-        Number(partes[0]) * 60 +
-        Number(partes[1])
-      );
-
-    }
-
-
-    /* =====================================================
-       INICIALIZAÇÃO
-    ====================================================== */
-
-    configurarDataHoje();
-
-    carregar();
-
-
-    /*
-     * Atualiza a agenda automaticamente
-     * a cada 60 segundos.
-     */
-
-    setInterval(
-      function() {
-
-        const hoje =
-          hojeISO();
-
-
-        /*
-         * Se mudou o dia,
-         * muda automaticamente para hoje.
-         */
-
-        if (
-          dataSelecionada !==
-          hoje
-        ) {
-
-          dataSelecionada =
-            hoje;
-
-
-          document
-            .getElementById(
-              "filtroData"
-            )
-            .value =
-            hoje;
-
-        }
-
-
-        carregar();
-
-      },
-      60000
-    );
-
-  </script>
-
-</body>
-</html>
+  margin: 0 auto 14px;
+
+  border: 3px solid #e6eaf1;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+
+  min-width: 290px;
+  max-width: 410px;
+
+  padding: 15px 18px;
+
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 13px;
+
+  background: #172033;
+  color: #fff;
+
+  box-shadow: 0 18px 40px rgba(0,0,0,.2);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transform: translateY(130px);
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    transform .3s ease,
+    opacity .3s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast.success {
+  background: #087653;
+}
+
+.toast.error {
+  background: #a52d43;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1050px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .header {
+    padding: 24px 16px;
+  }
+
+  .header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .today-info {
+    width: 100%;
+    text-align: left;
+  }
+
+  .container {
+    padding: 20px 14px 42px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filters {
+    padding: 16px;
+  }
+
+  .appointments {
+    padding: 16px;
+    grid-template-columns: 1fr;
+  }
+
+  .brand h1 {
+    font-size: 21px;
+  }
+
+  .brand p {
+    font-size: 13px;
+  }
+
+  .toast {
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    min-width: auto;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .header {
+    box-shadow: none;
+    print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .card,
+  .stat-card {
+    box-shadow: none;
+  }
+
+  .filters,
+  .form,
+  .actions,
+  .toast {
+    display: none !important;
+  }
+}
