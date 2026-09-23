@@ -2062,19 +2062,15 @@ button:disabled {
         return;
       }
 
-      if (!Array.isArray(compromissos) || compromissos.length === 0) {
-
-        container.innerHTML = `
-          <div class="all-empty">
-            Nenhum compromisso cadastrado.
-          </div>
-        `;
-
-        return;
-      }
-
+      // Lista somente os compromissos que ainda NÃO foram baixados.
       const listaTodos =
-        [...compromissos].sort(function(a, b) {
+        (Array.isArray(compromissos) ? compromissos : [])
+        .filter(function(c) {
+          return String(c.baixado || "")
+            .trim()
+            .toLowerCase() !== "sim";
+        })
+        .sort(function(a, b) {
 
           const dataA = normalizarData(a.data);
           const dataB = normalizarData(b.data);
@@ -2088,14 +2084,20 @@ button:disabled {
 
         });
 
+      if (listaTodos.length === 0) {
+
+        container.innerHTML = `
+          <div class="all-empty">
+            Nenhum compromisso pendente.
+          </div>
+        `;
+
+        return;
+      }
+
       let html = "";
 
       listaTodos.forEach(function(c) {
-
-        const concluido =
-          String(c.baixado || "")
-            .trim()
-            .toLowerCase() === "sim";
 
         const data =
           normalizarData(c.data);
@@ -2104,7 +2106,7 @@ button:disabled {
           formatarHorario(c.horario);
 
         html += `
-          <div class="all-appointment ${concluido ? "done" : ""}">
+          <div class="all-appointment">
 
             <div class="all-appointment-top">
 
