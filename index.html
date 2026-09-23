@@ -666,6 +666,71 @@ button:disabled {
   margin-top: 25px;
 }
 
+/* TODOS OS COMPROMISSOS */
+
+.all-appointments {
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 16px 18px;
+}
+
+.all-appointment {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.all-appointment:last-child {
+  border-bottom: 0;
+}
+
+.all-appointment-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.all-appointment-time {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.all-appointment-date {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.all-appointment-title {
+  color: var(--dark);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.all-appointment.done {
+  opacity: .58;
+}
+
+.all-appointment.done .all-appointment-title {
+  text-decoration: line-through;
+}
+
+.all-empty {
+  padding: 24px 8px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 1050px) {
+  .all-appointments {
+    max-height: 420px;
+  }
+}
+
 /* ESTADOS */
 
 .empty {
@@ -1195,6 +1260,34 @@ button:disabled {
 
         </form>
 
+        <!-- TODOS OS COMPROMISSOS -->
+
+        <div class="card-header">
+
+          <div>
+
+            <h2 class="card-title">
+              Todos os compromissos
+            </h2>
+
+            <p class="card-subtitle">
+              Visão geral da agenda
+            </p>
+
+          </div>
+
+        </div>
+
+        <div
+          class="all-appointments"
+          id="todosCompromissos">
+
+          <div class="loading">
+            Carregando compromissos...
+          </div>
+
+        </div>
+
       </aside>
 
     </section>
@@ -1710,6 +1803,7 @@ button:disabled {
         dataSelecionada ||
         hojeISO();
 
+      renderizarTodosCompromissos();
 
       let lista =
         compromissos.filter(
@@ -1951,6 +2045,89 @@ button:disabled {
 
       relatorio.innerHTML =
         html;
+
+    }
+
+
+    /* =====================================================
+       LISTAR TODOS OS COMPROMISSOS
+    ====================================================== */
+
+    function renderizarTodosCompromissos() {
+
+      const container =
+        document.getElementById("todosCompromissos");
+
+      if (!container) {
+        return;
+      }
+
+      if (!Array.isArray(compromissos) || compromissos.length === 0) {
+
+        container.innerHTML = `
+          <div class="all-empty">
+            Nenhum compromisso cadastrado.
+          </div>
+        `;
+
+        return;
+      }
+
+      const listaTodos =
+        [...compromissos].sort(function(a, b) {
+
+          const dataA = normalizarData(a.data);
+          const dataB = normalizarData(b.data);
+
+          if (dataA !== dataB) {
+            return dataA.localeCompare(dataB);
+          }
+
+          return converterMinutos(a.horario) -
+                 converterMinutos(b.horario);
+
+        });
+
+      let html = "";
+
+      listaTodos.forEach(function(c) {
+
+        const concluido =
+          String(c.baixado || "")
+            .trim()
+            .toLowerCase() === "sim";
+
+        const data =
+          normalizarData(c.data);
+
+        const horario =
+          formatarHorario(c.horario);
+
+        html += `
+          <div class="all-appointment ${concluido ? "done" : ""}">
+
+            <div class="all-appointment-top">
+
+              <span class="all-appointment-time">
+                ${escapeHtml(horario)}
+              </span>
+
+              <span class="all-appointment-date">
+                ${escapeHtml(formatarData(data))}
+              </span>
+
+            </div>
+
+            <div class="all-appointment-title">
+              ${escapeHtml(c.compromisso)}
+            </div>
+
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
 
     }
 
