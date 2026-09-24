@@ -643,6 +643,35 @@ button:disabled {
   cursor: pointer;
 }
 
+/* AÇÕES DO COMPROMISSO */
+
+.appointment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-edit {
+  height: 34px;
+  padding: 0 11px;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid #d9e1ff;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.btn-edit:hover {
+  background: #dfe7ff;
+}
+
+.btn-edit:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* FORMULÁRIO */
 
 .form {
@@ -1183,11 +1212,11 @@ button:disabled {
 
           <div>
 
-            <h2 class="card-title">
+            <h2 class="card-title" id="tituloFormulario">
               Novo compromisso
             </h2>
 
-            <p class="card-subtitle">
+            <p class="card-subtitle" id="subtituloFormulario">
               Cadastre um novo compromisso
             </p>
 
@@ -1256,6 +1285,17 @@ button:disabled {
 
             </button>
 
+            <button
+              type="button"
+              class="btn-secondary btn-full"
+              id="btnCancelarEdicao"
+              onclick="cancelarEdicao()"
+              style="display:none; margin-top:10px;">
+
+              ✕ Cancelar edição
+
+            </button>
+
           </div>
 
         </form>
@@ -1319,6 +1359,10 @@ button:disabled {
     let compromissos = [];
 
     let dataSelecionada = "";
+
+    // ID do compromisso que está sendo editado.
+    // Vazio = modo de inclusão.
+    let compromissoEmEdicao = "";
 
 
     /* =====================================================
@@ -1553,7 +1597,9 @@ button:disabled {
         const dados = {
 
           acao:
-            "salvar",
+            compromissoEmEdicao
+              ? "editar"
+              : "salvar",
 
           data:
             document.getElementById(
@@ -1571,9 +1617,19 @@ button:disabled {
             ).value.trim(),
 
           baixado:
-            "Não"
+            compromissoEmEdicao
+              ? (
+                  compromissos.find(
+                    c => String(c.id) === String(compromissoEmEdicao)
+                  )?.baixado || "Não"
+                )
+              : "Não"
 
         };
+
+        if (compromissoEmEdicao) {
+          dados.id = compromissoEmEdicao;
+        }
 
 
         if (
@@ -1644,18 +1700,19 @@ button:disabled {
 
 
           mostrarToast(
-            "✅ Compromisso salvo com sucesso!"
+            compromissoEmEdicao
+              ? "✅ Compromisso alterado com sucesso!"
+              : "✅ Compromisso salvo com sucesso!"
           );
 
 
-          form.reset();
+          cancelarEdicao(false);
 
 
           document
             .getElementById(
               "data"
-            )
-            .value =
+            ).value =
             dataSelecionada ||
             hojeISO();
 
@@ -1681,7 +1738,9 @@ button:disabled {
             false;
 
           btn.textContent =
-            "💾 Salvar compromisso";
+            compromissoEmEdicao
+              ? "💾 Salvar alterações"
+              : "💾 Salvar compromisso";
 
         }
 
@@ -2008,30 +2067,42 @@ button:disabled {
 
               <div class="appointment-footer">
 
-                <label
-                  class="check-container"
-                >
+                <div class="appointment-actions">
 
-                  <input
-                    type="checkbox"
-                    ${concluido ? "checked" : ""}
-                    onchange="
-                      atualizar(
-                        '${escapeJs(c.id)}',
-                        this.checked
-                      )
-                    "
+                  <label
+                    class="check-container"
                   >
 
-                  <span>
-                    ${
-                      concluido
-                        ? "Baixado"
-                        : "Marcar como concluído"
-                    }
-                  </span>
+                    <input
+                      type="checkbox"
+                      ${concluido ? "checked" : ""}
+                      onchange="
+                        atualizar(
+                          '${escapeJs(c.id)}',
+                          this.checked
+                        )
+                      "
+                    >
 
-                </label>
+                    <span>
+                      ${
+                        concluido
+                          ? "Baixado"
+                          : "Marcar como concluído"
+                      }
+                    </span>
+
+                  </label>
+
+                  <button
+                    type="button"
+                    class="btn-edit"
+                    onclick="editarCompromisso('${escapeJs(c.id)}')"
+                  >
+                    ✏️ Editar
+                  </button>
+
+                </div>
 
               </div>
 
@@ -2190,6 +2261,87 @@ button:disabled {
         )
         .textContent =
         compromissos.length;
+
+    }
+
+
+    /* =====================================================
+       EDITAR COMPROMISSO
+    ====================================================== */
+
+    function editarCompromisso(id) {
+
+      const compromisso =
+        compromissos.find(
+          function(item) {
+            return String(item.id) === String(id);
+          }
+        );
+
+      if (!compromisso) {
+        mostrarToast(
+          "Compromisso não encontrado.",
+          "error"
+        );
+        return;
+      }
+
+      compromissoEmEdicao =
+        String(compromisso.id);
+
+      document.getElementById("data").value =
+        normalizarData(compromisso.data);
+
+      document.getElementById("horario").value =
+        formatarHorario(compromisso.horario);
+
+      document.getElementById("compromisso").value =
+        compromisso.compromisso || "";
+
+      document.getElementById("tituloFormulario").textContent =
+        "Editar compromisso";
+
+      document.getElementById("subtituloFormulario").textContent =
+        "Altere os dados e salve novamente";
+
+      document.getElementById("btnSalvar").textContent =
+        "💾 Salvar alterações";
+
+      document.getElementById("btnCancelarEdicao").style.display =
+        "block";
+
+      document.getElementById("data").focus();
+
+      document.querySelector("aside.card").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    function cancelarEdicao(limparCampos = true) {
+
+      compromissoEmEdicao = "";
+
+      if (limparCampos) {
+        form.reset();
+      }
+
+      document.getElementById("tituloFormulario").textContent =
+        "Novo compromisso";
+
+      document.getElementById("subtituloFormulario").textContent =
+        "Cadastre um novo compromisso";
+
+      document.getElementById("btnSalvar").textContent =
+        "💾 Salvar compromisso";
+
+      document.getElementById("btnCancelarEdicao").style.display =
+        "none";
+
+      document.getElementById("data").value =
+        dataSelecionada || hojeISO();
 
     }
 
